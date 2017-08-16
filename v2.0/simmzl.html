@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href='http://cdn.webfont.youziku.com/webfonts/nomal/105735/47103/597ab4edf629d807b428b9c9.css'
+          rel='stylesheet' type='text/css'/>
+    <title>Simmzl</title>
+    <style>
+        html, body {
+            overflow: hidden;
+            height: 100%;
+        }
+        body {
+            color: #333;
+            font-family: 'Gothamc2c7c099b19d07';
+            font-weight: 900;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+            -webkit-transition: 0.3s ease-in-out;
+            -moz-transition: 0.3s ease-in-out;
+            -o-transition: 0.3s ease-in-out;
+            transition: 0.3s ease-in-out;
+        }
+        #container,#backMsg {
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+        h1, h4 {
+            cursor: default;
+            position: relative;
+        }
+        h4, a {
+            color: #999;
+        }
+        a {
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        #backMsg{
+            font-size: 44px;
+            color: #ffffff;
+            letter-spacing: 5px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        #workshop a,#workshop p{
+            -webkit-transition: 0.3s ease-in-out;
+            -moz-transition: 0.3s ease-in-out;
+            -o-transition: 0.3s ease-in-out;
+            transition: 0.3s ease-in-out;
+        }
+        #workshop a:hover{
+            color: #fff;
+        }
+        #detail a{
+            color: #d9d9d9;
+            font-size: smaller;
+            letter-spacing: 2px;
+        }
+        #detail{
+            opacity: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div id="backMsg"></div>
+<div id="container">
+    <h1>SIMMZL</h1>
+    <h4>Will Be A Web Front-End Developer</h4>
+    <p><a href="//movie.simmzl.cn" onmouseover="change(this,'FOR RECOMMENDING MOVIES I LIKE','linear-gradient(60deg, #fbed96 0%, #abecd6  100%)')" onmouseout="back(this)">CQMovie</a></p>
+    <p><a href="//github.com/simmzl" onmouseover="change(this,'INTENDING WEB FRONT-END DEVELOPER','linear-gradient(-225deg, #DFFFCD 0%, #90F9C4 48%, #39F3BB 100%)')" onmouseout="back(this)">Github</a></p>
+    <p><a href="//blog.csdn.net/sinat_38752382" onmouseover="change(this,'TO RECORD THE PROBLEMS,TECHNIQUES AND IDEAS','linear-gradient(-20deg, #00cdac 0%, #8ddad5 100%)')" onmouseout="back(this)">Blog</a></p>
+    <p><a href="//simmzl.cn/cqs/index.html" onmouseover="change(this,'A CQ STUDIO THAT I DON\'T WANT TO MAINTAIN','linear-gradient(-60deg, #ff5858 0%, #f09819 100%)')" onmouseout="back(this)">CQS</a></p>
+    <div id="workshop"  onmouseleave="back(this)">
+        <p><a id="workshopTitle" href="javascript:;" onmouseenter="change(this,'SOME OF THE PROJECTS I\'VE DONE','linear-gradient(-20deg, #fc6076 0%, #ff9a44 100%)')">Workshop</a></p>
+        <p id="detail">
+            <a href="//simmzl.github.io/IOT-Monitor/echarts.html ">IOT管理</a>
+            <a href="//github.com/simmzl/DesignDemo">还原设计稿</a>
+            <a href="//github.com/simmzl/Clock">时钟</a>
+            <a href="//github.com/simmzl">...</a>
+            <!--#05B99E  #f5574c  #30453B  #00d1b2  #310736-->
+        </p>
+    </div>
+</div>
+<script type="text/javascript">
+    function change(obj,msg,color) {
+        obj.style.color="#fff";
+        document.getElementById("backMsg").innerHTML=msg;
+        document.body.style.backgroundImage =color;
+    }
+    function back(obj) {
+        document.body.style.backgroundImage = "";
+        document.getElementById("backMsg").innerHTML="";
+        obj.style.color="#999";
+        var opacity = document.getElementById("detail").style.opacity;
+        if(opacity == "1" && obj.id=="workshop"){
+            document.getElementById("detail").style.opacity="0";
+        }
+    }
+    document.getElementById("workshopTitle").addEventListener("mouseenter",function(){
+        document.getElementById("detail").style.opacity="1";
+    });
+    document.getElementById("workshopTitle").addEventListener("mouseleave",function(){
+        document.getElementById("workshopTitle").style.color="#999";
+    });
+</script>
+</body>
+</html>
