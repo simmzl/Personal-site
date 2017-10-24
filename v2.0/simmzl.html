@@ -3,170 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
-    <link rel="icon" href="img/icon.png">
-    <link href='http://cdn.webfont.youziku.com/webfonts/nomal/105735/46972/59ef0565f629d806a0748a85.css' rel='stylesheet' type='text/css' />
     <title>Simmzl</title>
-    <style>
-        html, body {
-            overflow: hidden;
-            height: 100%;
-        }
-        body {
-            color: #333;
-            font-family: 'MyriadSetPro-Thdf2d65b9f19d07','Microsoft_YaHei',sans-serif;
-            font-weight: 300;
-            letter-spacing: 1px;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            user-select: none;
-            -webkit-transition: 0.3s ease-in-out;
-            -moz-transition: 0.3s ease-in-out;
-            -o-transition: 0.3s ease-in-out;
-            transition: 0.3s ease-in-out;
-        }
-        #container,#backMsg,#modal {
-            text-align: center;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            -webkit-transform: translate(-50%, -50%);
-            -moz-transform: translate(-50%, -50%);
-            -ms-transform: translate(-50%, -50%);
-            -o-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-        }
-        h1, h4 {
-            cursor: default;
-        }
-        h4, a {
-            color: #999;
-        }
-        h4{
-            min-width: 270px;
-        }
-        a {
-            text-decoration: none;
-            /*padding: 10px;*/
-            padding: 0 10px 0 10px;
-            border-radius: 4px;
-        }
-        p,h1,h4{
-            padding: 0;
-            margin: 8px 0 8px 0;
-            letter-spacing: 2px;
-        }
-        #backMsg{
-            font-size: 44px;
-            color: #ffffff;
-            letter-spacing: 5px;
-            padding-left: 20px;
-            padding-right: 20px;
-        }
-        #workshop a,#workshop p{
-            -webkit-transition: 0.3s ease-in-out;
-            -moz-transition: 0.3s ease-in-out;
-            -o-transition: 0.3s ease-in-out;
-            transition: 0.3s ease-in-out;
-        }
-        #workshop a:hover{
-            color: #fff;
-        }
-        #detail a{
-            color: #d9d9d9;
-            font-size: smaller;
-            letter-spacing: 2px;
-        }
-        #detail{
-            opacity: 0;
-        }
-        #modal{
-            background-color: #fff;
-            border-radius: 16px;
-            box-shadow: 0 6px 15px rgba(36,37,38,0.1);
-            -webkit-transition: all .4s ;
-            -moz-transition: all .4s ;
-            -o-transition: all .4s ;
-            transition: all .4s ;
-            width: auto;
-            height: 0;
-            overflow: hidden;
-        }
-        #modal:hover{
-            box-shadow: 0 6px 15px rgba(36,37,38,0.2);
-        }
-        #more{
-            cursor: pointer;
-        }
-        #close{
-            display: inline-block;
-            height: 20px;
-            width: 20px;
-            float: left;
-            padding: 0;
-            cursor: pointer;
-        }
-        /*#close span{*/
-            /*display: inline-block;*/
-            /*width: 1px;*/
-            /*height: 16px;*/
-            /*position:relative;*/
-            /*background: #999;*/
-            /*-webkit-transform: rotate(45deg);*/
-            /*-moz-transform: rotate(45deg);*/
-            /*-o-transform: rotate(45deg);*/
-            /*-ms-transform: rotate(45deg);*/
-            /*transform: rotate(45deg);*/
-        /*}*/
-        /*#close span:after{*/
-            /*content: '';*/
-            /*position: absolute;*/
-            /*top: 0;*/
-            /*left: 0;*/
-            /*width: 1px;*/
-            /*height: 16px;*/
-            /*background: #999;*/
-            /*-webkit-transform: rotate(270deg);*/
-            /*-moz-transform: rotate(270deg);*/
-            /*-ms-transform: rotate(270deg);*/
-            /*-o-transform: rotate(270deg);*/
-            /*transform: rotate(270deg);*/
-        /*}*/
-        #modal a{
-            display: block;
-            -webkit-transition: all .4s ;
-            -moz-transition: all .4s ;
-            -o-transition: all .4s ;
-            transition: all .4s ;
-        }
-        #modal a:hover{
-            color: #000;
-        }
-        .more_list{
-            margin: 15px 15px 30px 15px;
-        }
-        #mask{
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: linear-gradient(45deg, #00ffe7 0%, #f00000 100%);
-            opacity: 0.5;
-            display: none;
-        }
-        .git{
-            font-size: 12px;
-            color: #c6c6c6;
-            padding-left: 0;
-            padding-right: 0;
-        }
-        @media screen and (max-width:768px){
-            #backMsg{
-                font-size: 30px;
-                letter-spacing: 2px;
-            }
-        }
-    </style>
+    <link rel="icon" href="img/icon.png">
+    <link href='http://cdn.webfont.youziku.com/webfonts/nomal/105735/46972/59ef0565f629d806a0748a85.css'rel='stylesheet' type='text/css'/>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 <div id="backMsg"></div>
@@ -174,20 +14,19 @@
     <h1>SIMMZL</h1>
     <h4>Will Be A Web Front-End Developer</h4>
     <div id="list">
-        <p><a class="list" href="//movie.simmzl.cn" onmouseover="change(this,'FOR RECOMMENDING MOVIES I LIKE','linear-gradient(60deg, #fbed96 0%, #abecd6  100%)')">CQMovie</a></p>
-        <p><a class="list" href="//github.com/simmzl" onmouseover="change(this,'INTENDING WEB FRONT-END DEVELOPER','linear-gradient(-225deg, #DFFFCD 0%, #90F9C4 48%, #39F3BB 100%)')">Github</a></p>
-        <p><a class="list" href="//simmzl.tuchong.com" onmouseover="change(this,'PHOTOGRAPH BY @SIMMZL','linear-gradient(-20deg, #00cdac 0%, #8ddad5 100%)')">Photos</a></p>
-        <p><a class="list" href="//blog.simmzl.cn" onmouseover="change(this,'TO RECORD THE PROBLEMS,TECHNIQUES AND IDEAS','linear-gradient(120deg, #f6d365 0%, #fda085 100%)')">Blog</a></p>
+        <p><a class="list" href="//movie.simmzl.cn">CQMovie</a></p>
+        <p><a class="list" href="//github.com/simmzl">Github</a></p>
+        <p><a class="list" href="//simmzl.tuchong.com">Photos</a></p>
+        <p><a class="list" href="//blog.simmzl.cn">Blog</a></p>
     </div>
 
-    <div id="workshop"  onmouseleave="back(this)">
-        <p><a id="workshopTitle" href="javascript:;" onmouseenter="change(this,'SOME OF THE PROJECTS I\'VE DONE','linear-gradient(-20deg, #fc6076 0%, #ff9a44 100%)')">Workshop</a></p>
+    <div id="workshop">
+        <p><a id="workshopTitle" href="javascript:;">Workshop</a></p>
         <p id="detail">
-            <a href="//simmzl.cn/lab/charts.html">IOT</a>
+            <a href="//simmzl.cn/lab/charts.html" id="test">IOT</a>
             <a href="//simmzl.cn/design/design.html">DEMO</a>
             <a href="//simmzl.cn/games/index.html">GAMES</a>
             <a id="more">&#8594;</a>
-            <!--#05B99E  #f5574c  #30453B  #00d1b2  #310736-->
         </p>
     </div>
 </div>
@@ -205,71 +44,29 @@
         <p><a class="git" href="//github.com/simmzl">More in github...</a></p>
     </div>
 </div>
+<script src="js/main.js"></script>
 <script type="text/javascript">
-    let list = document.getElementById('list');
-    let backMsg = document.getElementById("backMsg");
-    let more = document.getElementById('more');
-    let close = document.getElementById('close');
-    let mask = document.getElementById('mask');
-    let modal = document.getElementById('modal');
-    let detail = document.getElementById('detail');
-    let workshopTitle = document.getElementById('workshopTitle');
-//    let workShop = document.
-    change = (obj,msg,color) => {
-        obj.style.color="#fff";
-        backMsg.innerHTML=msg;
-        document.body.style.backgroundImage =color;
-    };
-
-    back = (obj) => {
-        document.body.style.backgroundImage = "";
-        backMsg.innerHTML="";
-        obj.style.color="#999";
-        let opacity = document.getElementById("detail").style.opacity;
-        if(opacity === "1" && obj.id === "workshop"){
-            detail.style.opacity="0";
-        }
-    };
-
-    workshopTitle.addEventListener("mouseenter",() => {
-        detail.style.opacity="1";
-    });
-    workshopTitle.addEventListener("mouseleave",() => {
-        workshopTitle.style.color="#999";
-    });
-
-    list.addEventListener('mouseout', e => {
-        let el = e.target;
-        el.className === 'list' && back(el);
-    });
-
-    more.addEventListener('click',() => {
-        mask.style.display = 'inline';
-        modal.style.padding = '15px';
-        modal.style.height = '278px';
-        back(workshopTitle.parentNode);
-    });
-
-    close.addEventListener('click',() => {
-        mask.style.display = 'none';
-        modal.style.height = '0';
-        modal.style.padding = '0';
-    });
-
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
     ga('create', 'UA-103794454-1', 'auto');
     ga('send', 'pageview');
 
     let _hmt = _hmt || [];
-    (function() {
-      let hm = document.createElement("script");
-      hm.src = "https://hm.baidu.com/hm.js?198153bff3454fe6175828e0bcdebc38";
-      let s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
+    (function () {
+        let hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?198153bff3454fe6175828e0bcdebc38";
+        let s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
     })();
 </script>
 </body>
