@@ -10,7 +10,7 @@ let workshop = document.getElementById('workshop');
 let container = document.getElementById('container');
 
 container.addEventListener('mouseover', e => {
-    let el = e.target;
+    let el = e.target || e.srcElement;
     let name = el.innerHTML.toLowerCase();
     let backMsgInner;
     let change = () => {
@@ -65,7 +65,7 @@ workshop.addEventListener('mouseleave',() => {
 });
 
 list.addEventListener('mouseout', e => {
-    let el = e.target;
+    let el = e.target || e.srcElement;
     el.className === 'list' && back(el);
 });
 
@@ -76,16 +76,18 @@ let showModal = () => {
     modal.style.height = '278px';
     modal.style.borderRadius= "16px";
 };
-
-close.addEventListener('click', () => {
+let closeModal = () =>{
     mask.style.display = 'none';
     modal.style.height = '0';
     modal.style.padding = '0';
     modal.style.borderRadius= "0";
-});
+};
+
+close.addEventListener('click', closeModal);
+mask.addEventListener('click',closeModal);
 
 detail.addEventListener('click', e => {
-    let el = e.target;
+    let el = e.target || e.srcElement;
     if(el.nodeName.toLowerCase() === 'a'){
         let opacity = detail.style.opacity;
         if(!opacity || opacity === '0'){
@@ -99,7 +101,7 @@ detail.addEventListener('click', e => {
     }
 });
 detail.addEventListener('mouseover',e =>{
-    let el = e.target;
+    let el = e.target || e.srcElement;
     if(el.nodeName.toLowerCase() === 'a'){
         let opacity = detail.style.opacity;
         !opacity || opacity === '0'? el.className = 'cursorDef' : el.className = '';
