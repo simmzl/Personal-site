@@ -183,3 +183,10 @@ p{
 .cursorPo{
     cursor:pointer;
 }
+
+.list_container {
+    font-size: 0;
+}
+.list, #workshop {
+    font-size: 16px;
+}

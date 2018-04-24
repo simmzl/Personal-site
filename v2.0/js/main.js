@@ -1,19 +1,19 @@
-let list = document.getElementById('list');
-let backMsg = document.getElementById("backMsg");
-let more = document.getElementById('more');
-let close = document.getElementById('close');
-let mask = document.getElementById('mask');
-let modal = document.getElementById('modal');
-let detail = document.getElementById('detail');
-let workshopTitle = document.getElementById('workshopTitle');
-let workshop = document.getElementById('workshop');
-let container = document.getElementById('container');
+const list = document.getElementById('list');
+const backMsg = document.getElementById("backMsg");
+const more = document.getElementById('more');
+const close = document.getElementById('close');
+const mask = document.getElementById('mask');
+const modal = document.getElementById('modal');
+const detail = document.getElementById('detail');
+const workshopTitle = document.getElementById('workshopTitle');
+const workshop = document.getElementById('workshop');
+const container = document.getElementById('container');
 
 container.addEventListener('mouseover', e => {
-    let el = e.target || e.srcElement;
-    let name = el.innerHTML.toLowerCase();
+    const el = e.target || e.srcElement;
+    const name = el.innerHTML.toLowerCase();
     let backMsgInner;
-    let change = () => {
+    const change = _ => {
         el.style.color = "#fff";
         backMsg.innerHTML = backMsgInner;
         document.body.classList.add(name);
@@ -43,40 +43,40 @@ container.addEventListener('mouseover', e => {
     }
 });
 
-let back = (obj) => {
-    let clsName = document.body.className;
+const back = obj => {
+    const clsName = document.body.className;
     !!clsName && document.body.classList.remove(clsName);
     backMsg.innerHTML = "";
     obj.style.color = "#999";
-    let opacity = detail.style.opacity;
+    const opacity = detail.style.opacity;
     if (opacity === "1" && obj.id === "workshop") {
         detail.style.opacity = "0";
     }
 };
 
-workshopTitle.addEventListener("mouseenter", () => {
+workshopTitle.addEventListener("mouseenter", _ => {
     detail.style.opacity = "1";
 });
-workshopTitle.addEventListener("mouseleave", () => {
+workshopTitle.addEventListener("mouseleave", _ => {
     workshopTitle.style.color = "#999";
 });
-workshop.addEventListener('mouseleave',() => {
+workshop.addEventListener('mouseleave', _ => {
     back(workshop);
 });
 
 list.addEventListener('mouseout', e => {
-    let el = e.target || e.srcElement;
+    const el = e.target || e.srcElement;
     el.className === 'list' && back(el);
 });
 
-let showModal = () => {
+const showModal = _ => {
     back(workshop);
     mask.style.display = 'inline';
     modal.style.padding = '15px';
     modal.style.height = '278px';
     modal.style.borderRadius= "16px";
 };
-let closeModal = () =>{
+const closeModal = _ =>{
     mask.style.display = 'none';
     modal.style.height = '0';
     modal.style.padding = '0';
@@ -84,26 +84,26 @@ let closeModal = () =>{
 };
 
 close.addEventListener('click', closeModal);
-mask.addEventListener('click',closeModal);
+mask.addEventListener('click', closeModal);
 
 detail.addEventListener('click', e => {
-    let el = e.target || e.srcElement;
-    if(el.nodeName.toLowerCase() === 'a'){
-        let opacity = detail.style.opacity;
-        if(!opacity || opacity === '0'){
+    const el = e.target || e.srcElement;
+    if(el.nodeName.toLowerCase() === 'a') {
+        const opacity = detail.style.opacity;
+        if(!opacity || opacity === '0') {
             el.className = 'cursorDef';
             e.preventDefault();
-            more.removeEventListener('click',showModal);
-        }else{
+            more.removeEventListener('click', showModal);
+        } else {
             el.className = '';
             el.id === 'more' && showModal();
         }
     }
 });
-detail.addEventListener('mouseover',e =>{
-    let el = e.target || e.srcElement;
-    if(el.nodeName.toLowerCase() === 'a'){
-        let opacity = detail.style.opacity;
+detail.addEventListener('mouseover', e =>{
+    const el = e.target || e.srcElement;
+    if(el.nodeName.toLowerCase() === 'a') {
+        const opacity = detail.style.opacity;
         !opacity || opacity === '0'? el.className = 'cursorDef' : el.className = '';
     }
 });
