@@ -1,0 +1,101 @@
+@import "./reset";
+
+@distance: 40px;
+@transition: 0.5s ease-in-out;
+
+.flicker {
+    // -webkit-backface-visibility: hidden;
+    // -moz-backface-visibility: hidden;
+    // -ms-backface-visibility: hidden;
+    // backface-visibility: hidden;
+    // -webkit-perspective: 1000;
+    // -moz-perspective: 1000;
+    // -ms-perspective: 1000;
+    // perspective: 1000;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+
+.menus-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* background: #444; */
+    .menus {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        color: #444;
+        font-size: 0;
+        p {
+            font-size: 12px;
+            cursor: pointer;
+        }
+    }
+}
+
+.main-container {
+    width: 600%;
+    height: 100%;
+    transition: .5s ease-in-out;
+    position: relative;
+    .flicker;
+    .main {
+        width: 16.666%;
+        height: 100%;
+        position: relative;
+        display: inline-block;
+        transition: @transition;
+        transform: scale3d(1, 1, 1);
+        transform: translate3d(0, 0, 0);
+        background: #fff;
+        box-shadow: 0 15px 30px rgba(36, 37, 38, 0.1);
+        .flicker;
+        .fixed {
+            position: absolute;
+            /* position: fixed; */
+            font-size: 12px;
+            color: #000;
+            &-left-top {
+                top: @distance;
+                left: @distance;
+                font-size: 16px;
+                /* border-top: 2px solid #000; */
+            }
+            &-right-top {
+                right: @distance;
+                top: @distance;
+                border: 2px solid #000;
+                padding: 5px 5px 20px; 
+            }
+            &-left-bottom {
+                bottom: 95px;
+                left: -15px;
+                transform: rotate(90deg);
+            }
+            &-right-bottom {
+                right: @distance;
+                bottom: @distance;
+                font-size: 0;
+                text-align: right;
+                .items {
+                    transition: .3s ease-in-out;
+                    margin: 0;
+                    padding-top: 12px;
+                    cursor: pointer;
+                    font-size: 12px;
+                    &:hover {
+                        color: #888;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
