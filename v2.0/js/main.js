@@ -1,9 +1,9 @@
 const list = document.getElementById('list');
 const backMsg = document.getElementById("backMsg");
-const more = document.getElementById('more');
+// const more = document.getElementById('more');
 const close = document.getElementById('close');
 const mask = document.getElementById('mask');
-const modal = document.getElementById('modal');
+// const modal = document.getElementById('modal');
 const detail = document.getElementById('detail');
 const workshopTitle = document.getElementById('workshopTitle');
 const workshop = document.getElementById('workshop');
@@ -69,22 +69,22 @@ list.addEventListener('mouseout', e => {
     el.className === 'list' && back(el);
 });
 
-const showModal = _ => {
-    back(workshop);
-    mask.style.display = 'inline';
-    modal.style.padding = '15px';
-    modal.style.height = '278px';
-    modal.style.borderRadius= "16px";
-};
-const closeModal = _ =>{
-    mask.style.display = 'none';
-    modal.style.height = '0';
-    modal.style.padding = '0';
-    modal.style.borderRadius= "0";
-};
+// const showModal = _ => {
+//     back(workshop);
+//     mask.style.display = 'inline';
+//     modal.style.padding = '15px';
+//     modal.style.height = '278px';
+//     modal.style.borderRadius= "16px";
+// };
+// const closeModal = _ =>{
+//     mask.style.display = 'none';
+//     modal.style.height = '0';
+//     modal.style.padding = '0';
+//     modal.style.borderRadius= "0";
+// };
 
-close.addEventListener('click', closeModal);
-mask.addEventListener('click', closeModal);
+// close.addEventListener('click', closeModal);
+// mask.addEventListener('click', closeModal);
 
 detail.addEventListener('click', e => {
     const el = e.target || e.srcElement;
@@ -93,10 +93,10 @@ detail.addEventListener('click', e => {
         if(!opacity || opacity === '0') {
             el.className = 'cursorDef';
             e.preventDefault();
-            more.removeEventListener('click', showModal);
+            // more.removeEventListener('click', showModal);
         } else {
             el.className = '';
-            el.id === 'more' && showModal();
+            // el.id === 'more' && showModal();
         }
     }
 });
