@@ -5,15 +5,18 @@ const events = {
     currentName: "",
     menusContainer: document.querySelector(".menus-container"),
     menus: document.querySelector(".menus"),
+    menusBtn: [...document.querySelectorAll(".fixed-center-bottom")],
     container: document.querySelector(".main-container"),
     main: [...document.querySelectorAll(".main")],
     items: [...document.querySelectorAll(".items")],
-    init: function() {
+    init() {
         const me = this;
-        me.items.forEach(i => {
-            i.addEventListener("click", e => {
-                const name = e.target.innerText.toLowerCase();
-                if (name === me.currentName) return me.moveDown(name);
+        location.hash = "";
+        me.menusBtn.forEach(i => {
+            i.addEventListener("click", _ => {
+                const hash = me.getHash();
+                if (hash && this.currentName === hash) return me.moveDown(hash);
+                const name = hash ? hash : "home";
                 me.moveUp(name);
             });
         });
@@ -25,35 +28,43 @@ const events = {
             document.querySelector(`.${i}`).style.transform = Style.transformTarget;
         });
     },
-    moveUp: function(name) {
+    moveUp(name) {
         this.currentName = name;
+        location.hash = name;
         this.animationUp(document.querySelector(`.${name}`));
     },
-    moveDown: function(name) {
+    moveDown(name) {
         this.currentName = "";
+        location.hash = name;
         this.animationDown(document.querySelector(`.${name}`));
     },
-    animationUp: function(dom) {
+    animationUp(dom) {
         dom.style.transform = Style.transformTarget;
         setTimeout(_ => {
             this.menus.style.zIndex = 1;
         }, 300);
     },
-    animationDown: function(dom) {
+    animationDown(dom) {
         dom.style.transform = Style.transformOrigin;
-        setTimeout(_ => {
-            this.menus.style.zIndex = 0;
-        }, 300);
+        this.menus.style.zIndex = 0;
     },
-    turn: function(name) {
+    turn(name) {
         const me = this;
-        // if (name === me.currentName) return;
+        if (name === me.currentName) return me.moveDown(name);
         const targetIndex = me.menusList.indexOf(name);
         // me.container.style.transform = `translate3d(${- targetIndex * 0.16666 * me.container.offsetWidth}px, 0, 0)`;
         me.container.style.marginLeft = `${- targetIndex * 0.16666 * me.container.offsetWidth}px`;
         setTimeout(_ => {
             me.moveDown(name);
         }, 500);
+    },
+    // getHash: () => {
+    //     const hash = location.hash;
+    //     return hash ? hash.slice(1) : "";
+    // }
+    getHash() {
+        const hash = location.hash;
+        return hash ? hash.slice(1) : "";
     }
 }
 export default events;
