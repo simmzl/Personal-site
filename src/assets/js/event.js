@@ -11,6 +11,7 @@ const events = {
     items: [...document.querySelectorAll(".items")],
     init() {
         const me = this;
+        console.log(2);
         location.hash = "";
         me.menusBtn.forEach(i => {
             i.addEventListener("click", _ => {
