@@ -8,7 +8,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 // css压缩
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 // js压缩
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require("webpack");
 
 const src = path.resolve(__dirname, "src");
@@ -36,12 +36,12 @@ const config = {
             }
         },
         minimizer: [
-            new OptimizeCSSAssetsPlugin({}),
-            new UglifyJsPlugin({
-                cache: true,
-                parallel: true,
-                sourceMap: true
-            })
+            new OptimizeCSSAssetsPlugin({})
+            // new UglifyJsPlugin({
+            //     cache: true,
+            //     parallel: true,
+            //     sourceMap: true
+            // })
         ]
     },
     performance: {
