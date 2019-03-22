@@ -31,10 +31,11 @@ h4 {
 }
 
 a {
+    width: 100%;    
     color: #999;
     font-size: 16px;
     text-decoration: none;
-    padding: 4px 10px 4px 10px;
+    padding: 4px 0;
     -webkit-tap-highlight-color: #999;
     -webkit-user-select: none;
     -moz-user-focus: none;
@@ -93,13 +94,17 @@ h1, h4 {
 }
 
 .workshop {
-    background-image: linear-gradient(-45deg,#ee7752,#e73c7e,#23a6d5,#23d5ab);
-    background-image: -webkit-linear-gradient(-45deg,#ee7752,#e73c7e,#23a6d5,#23d5ab);
-    background-size: 400% 400%;
-    animation: Gradient 20s ease infinite;
+    /* background-image: linear-gradient(90deg, #496eaa, #944fa8, #924d4d, #944fa8, #496eaa);
+    background-image: -webkit-linear-gradient(0deg, #496eaa, #944fa8, #924d4d, #944fa8, #496eaa); */
+
+    background-image: linear-gradient(90deg, #0061ff, #c600ff, #ff8c00, #c600ff, #0061ff);
+    background-image: -webkit-linear-gradient(0deg, #0061ff, #c600ff, #ff8c00, #c600ff, #0061ff);
+
+    background-size: 1400% 400%;
+    animation: GradientInfinite 20s ease infinite;
 }
 
-@keyframes Gradient {
+@keyframes GradientRuturn {
     0% {
         background-position: 0 50%;
     }
@@ -110,6 +115,20 @@ h1, h4 {
 
     100% {
         background-position: 0 50%;
+    }
+}
+
+@keyframes GradientInfinite {
+    0% {
+        background-position: 0% 0%;
+    }
+    
+    50% {
+        background-position: 50% 100%;
+    }
+
+    100% {
+        background-position: 100% 0%;
     }
 }
 
