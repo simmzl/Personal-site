@@ -1,3 +1,21 @@
+/* @font-face {
+    font-family: 'MyriadSetPro-Thin';
+    src: url('//cdn.webfont.com/webfonts/nomal/105735/46972/5cb0ab03f629d80a14f08d92.gif?r=3C1B1AE17B83AFD0');
+    src: url('//cdn.webfont.com/webfonts/nomal/105735/46972/5cb0ab03f629d80a14f08d92.gif?r=3C1B1AE17B83AFD0?#iefix') format('embedded-opentype'),
+    url('//cdn.webfont.com/webfonts/nomal/105735/46972/5cb0ab03f629d80a14f08d92.png?r=3C1B1AE17B83AFD0') format('woff2'),
+    url('//cdn.webfont.com/webfonts/nomal/105735/46972/5cb0ab03f629d80a14f08d92.bmp?r=3C1B1AE17B83AFD0') format('woff');
+    font-weight: normal;
+    font-style: normal;
+} */
+
+@font-face {
+    font-family: 'MyriadSetPro-Thin';
+    /* src: url('./MyriadSetPro-Thin.ttf') format("truetype"); */
+    src: url('http://static.simmzl.cn/MyriadSetPro-Thin.ttf') format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
 *{
   padding: 0;
   margin: 0;
@@ -18,10 +36,6 @@ body {
         user-select: none;
 }
 
-h1, h4 {
-    cursor: default;
-}
-
 h1 {
     color: #333;
 }
@@ -33,6 +47,7 @@ h4 {
 a {
     width: 100%;    
     color: #999;
+    line-height: 28px;
     font-size: 16px;
     text-decoration: none;
     padding: 4px 0;
@@ -43,8 +58,10 @@ a {
 }
 
 h1, h4 {
+    cursor: default;
+    line-height: 40px;
     padding: 0;
-    margin: 10px 0 10px 0;
+    /* margin: 10px 0 10px 0; */
     letter-spacing: 2px;
 }
 
@@ -58,9 +75,10 @@ h1, h4 {
 }
 
 .banner {
+    line-height: 80px;
     font-size: 44px;
     color: #ffffff;
-    letter-spacing: 5px;
+    letter-spacing: 10px;
     padding-left: 20px;
     padding-right: 20px;
 }
