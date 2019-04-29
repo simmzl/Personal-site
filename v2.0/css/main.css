@@ -10,8 +10,8 @@
 
 @font-face {
     font-family: 'MyriadSetPro-Thin';
-    /* src: url('http://static.simmzl.cn/MyriadSetPro-Thin.ttf') format("truetype"); */
-    src: url('./MyriadSetPro-Thin.ttf') format("truetype");
+    src: url('https://static.simmzl.cn/fonts/MyriadSetPro-Thin.ttf') format("truetype");
+    /* src: url('./MyriadSetPro-Thin.ttf') format("truetype"); */
     font-weight: normal;
     font-style: normal;
 }
