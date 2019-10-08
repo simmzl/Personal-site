@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: sans-serif;
+      background: #000;
+      height: 100%;
+      background: #fff;
+    }
+
+    #canvas {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+
+    audio {
+      visibility: hidden;
+    }
+
+    #play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #13091B;
+      background: #ddd;
+      display: block;
+      width: 150px;
+      height: 46px;
+      line-height: 46px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 23px;
+      letter-spacing: 0.1em;
+      z-index: 1;
+      text-align: center;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="content">
+    <canvas id="canvas"></canvas>
+    <audio
+      loop
+      id="audio"
+      controls
+      src="https://static.simmzl.cn/music/Lana%20DelRey-Lust%20for%20Life.mp3"
+      crossOrigin="anonymous">
+    </audio>
+    <a href="javascript:;" id="play-btn">PLAY</a>
+  </div>
+  <script>
+    var btn = document.getElementById("play-btn");
+    var audio = document.getElementById("audio");
+
+    btn.onclick = function () {
+      btn.style.display = "none";
+
+      audio.play();
+      onLoadAudio();
+
+    };
+
+    function onLoadAudio() {
+      // 在音频的任何操作之前，都必须先创建 AudioContext 。它的作用是关联音频输入，对音频进行解码、控制音频的播放暂停等基础操作。
+      var context = new(window.AudioContext || window.webkitAudioContext)();
+
+      // AnalyserNode 用于获取音频的频率数据（ FrequencyData ）和时域数据（ TimeDomainData ）。从而实现音频的可视化。
+      var analyser = context.createAnalyser();
+      analyser.fftSize = 512;
+
+      // 将音频节点，关联到 AudioContext 上，作为整个音频分析过程的输入。
+      // 通过<audio>节点创建音频源
+      var source = context.createMediaElementSource(audio);
+      // 将音频源关联到分析器
+      source.connect(analyser);
+      // 将分析器关联到输出设备（耳机、扬声器）
+      analyser.connect(context.destination);
+
+      // 获取频率数据
+      var bufferLength = analyser.frequencyBinCount; // 256
+      var dataArray = new Uint8Array(bufferLength); // 长256的 Uint8Array
+
+      console.log(context);
+      console.log(analyser);
+      console.log(bufferLength);
+      console.log(dataArray);
+
+      var canvas = document.getElementById("canvas");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      var ctx = canvas.getContext("2d");
+
+      var WIDTH = canvas.width;
+      var HEIGHT = canvas.height;
+
+      var barWidth = WIDTH / bufferLength * 2;
+      var barHeight;
+
+      function renderFrame() {
+        requestAnimationFrame(renderFrame);
+
+        // 更新频率数据
+        analyser.getByteFrequencyData(dataArray);
+        // 清空画布，每次重新绘制
+        // 要清除的矩形左上角的 x 、y 坐标，要清除的矩形的宽度，以像素计
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+        // ctx.beginPath();
+        // ctx.lineWidth = 10;
+        // ctx.fillStyle="#0000ff";
+        // ctx.strokeStyle="#0000ff";
+        // ctx.moveTo(0, HEIGHT - dataArray[0]);
+
+        for (var i = 0, x = 0; i < bufferLength; i++) {
+          barHeight = dataArray[i] * 2;
+
+          var y = barHeight;
+
+          // ctx.quadraticCurveTo(x, HEIGHT - y, x + barWidth, HEIGHT - dataArray[i + 1] * 2 )
+
+          // ctx.lineTo(x, HEIGHT - y);
+          // drawCurvePath(ctx, [x - barWidth, HEIGHT - dataArray[i - 1] * 2 ], [x, HEIGHT - y], 0.5);
+          
+          // ctx.stroke();
+          // ctx.moveTo(x + barWidth, HEIGHT - dataArray[i + 1] * 2);
+          // i++;
+
+          // // 根据每个矩形高度映射一个背景色
+          // var r = 1000 * (i / bufferLength);
+          var r = 90;
+          // var g = barHeight / 5 + 10 * (i / bufferLength);
+          var g = 180 + barHeight * ((i + 20) * .9) / bufferLength;
+          var b = 1000 * (i / bufferLength);
+          // var b = 150 + barHeight * .1;
+          var b = 183;
+          var alp = (barHeight + 10 * (i / bufferLength)) / 100 + .1;
+          // ctx.strokeStyle="rgb(" + r + "," +  g + "," + b + ")";
+
+          // // 绘制一个矩形，并填充背景色
+          ctx.fillStyle = "rgba(" + r + "," + g + "," + b + "," + alp + ")";
+          ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
+
+          
+
+          // 256个数据这里不会全部都渲染，根据barWidth宽度来
+          // 2 为矩形间隔
+          x += barWidth + 0.5;
+        }
+      }
+
+      renderFrame();
+      // setInterval(renderFrame, 44);
+    }
+    /**
+    * 绘制一条曲线路径
+    * @param  {Object} ctx canvas渲染上下文
+    * @param  {Array<number>} start 起点
+    * @param  {Array<number>} end 终点
+    * @param  {number} curveness 曲度(0-1)
+    */
+    function drawCurvePath( ctx, start, end, curveness ) {
+        // 计算中间控制点
+        var cp = [
+            ( start[ 0 ] + end[ 0 ] ) / 2 - ( start[ 1 ] - end[ 1 ] ) * curveness,
+            ( start[ 1 ] + end[ 1 ] ) / 2 - ( end[ 0 ] - start[ 0 ] ) * curveness
+        ];
+        ctx.moveTo( start[ 0 ], start[ 1 ] );
+        ctx.quadraticCurveTo( 
+            cp[ 0 ], cp[ 1 ],
+            end[ 0 ], end[ 1 ]
+        );
+    }
+    // setTimeout(() => {
+    //   btn.click();
+    // }, 1000)
+  </script>
+</body>
+
+</html>
