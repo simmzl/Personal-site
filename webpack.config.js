@@ -147,18 +147,7 @@ const config = {
                         loader: "postcss-loader",
                         options: {
                             plugins: [
-                                require("autoprefixer")({
-                                    browsers: [
-                                        "ie >= 11",
-                                        "ff >= 30",
-                                        "chrome >= 34",
-                                        "safari >= 7",
-                                        "opera >= 23",
-                                        "ios >= 7",
-                                        "android >= 4.4",
-                                        "bb >= 10"
-                                    ]
-                                })
+                                require("autoprefixer")()
                             ]
                         }
                     },
