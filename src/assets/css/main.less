@@ -77,6 +77,11 @@ body {
             /* position: fixed; */
             font-size: @smFont;
             color: #000;
+            &-center {
+                top: 50%;
+                left: 50%;
+                transform: translate3d(-50%, -50%, 0);
+            }
             &-left-top {
                 top: @distance;
                 left: @distance;
@@ -151,40 +156,41 @@ body {
                     transition: .2s ease;
                 }
                 .icon-left {
-                    left: -8px;
+                    left: -6px;
                     padding: 20px 8px 20px 20px;
                     &:hover {
                         color: #000;
-                        left: -12px;
+                        left: -10px;
                     }
                 }
                 .icon-right {
-                    right: -8px;
+                    right: -6px;
                     padding: 20px 20px 20px 8px;
                     &:hover {
                         color: #000;
-                        right: -12px;
+                        right: -10px;
                     }
                 }
 
                 .icon-left::before, .icon-right::before {
                     display: inline-block;
-                    border: 4px solid @primaryColor;
+                    border: 1px solid @primaryColor;
                     // border-top-right-radius: 2px;
                     content: "";
                     position: relative;
-                    width: 0;
+                    width: 8px;
                     height: 0;
                 }
                 .icon-left::before {
-                    transform: rotate(225deg);
+                    // transform: rotate(225deg);
                 }
                 .icon-right::before {
-                    transform: rotate(45deg);
+                    // transform: rotate(45deg);
                 }
             }
         }
         &.music {
+            position: relative;
             background: #000;
             div, .fixed, .icon-left::before, .icon-right::before {
                 color: #fff;
@@ -192,6 +198,36 @@ body {
             }
             .btns span {
                 background: #fff;
+            }
+            .canvas {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+            }
+            .control-play {
+                width: 200px;
+                height: 200px;
+                transition: all .4s;
+                transition-timing-function: cubic-bezier(0, 0, 0.05, 1.06);
+                &-active {
+                    // left: 96.3%;
+                    // top: 15%;
+                    width: 100px;
+                    height: 100px;
+                    transform: translate3d(0, -330px, 0);
+                }
+                &-container {
+                    transition: all .3s;
+                    transition-timing-function: cubic-bezier(0, 0, 0.58, 0.4);
+                    &-active {
+                        transform: translate3d(617px, 0, 0);
+                    }
+                }
             }
         }
     }
@@ -205,7 +241,7 @@ body {
         &-left {
             width: 40%;
             height: 100%;
-            background: red;
+            background: #000;
         }
     }
 }
