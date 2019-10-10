@@ -109,7 +109,11 @@
             </div>
         </div>
         <div class="main music" id="music">
-            <div class="fixed fixed-left-top">SIMMZL</div>
+            <div class="fixed fixed-left-top">
+                <div id="turn">SIMMZL</div>
+                <div id="turnRect">rect</div>
+                <div id="webgl">webgl</div>
+            </div>
             <div class="fixed fixed-right-top" id="pause">FE</div>
             <div class="fixed fixed-left-bottom">NORWEGIAN WOOD</div>
             <div class="fixed fixed-center-bottom">
@@ -124,6 +128,20 @@
             <div class="fixed fixed-right-bottom">
                 <p class="items" id="loadSample">MUSIC</p>
             </div>
+            <!-- <div class="fixed fixed-center control-play" id="control-play">
+            </div> -->
+            <div class="fixed fixed-center control-play-container" id="control-play-container">
+                <div class="control-play" id="control-play"></div>
+            </div>
+            <audio
+                loop
+                preload
+                id="audio"
+                style="display: none"
+                crossOrigin="anonymous"
+                src="https://static.simmzl.cn/music/Connection-origin-OneRepublic.mp3">
+            </audio>
+            <canvas id="canvas" class="canvas"></canvas>
         </div>
         <div class="main github">
             <div class="fixed fixed-left-top">SIMMZL</div>
@@ -143,5 +161,6 @@
             </div>
         </div>
     </div>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </body>
 </html>
