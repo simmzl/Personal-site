@@ -36,8 +36,6 @@ $(document).ready(function () {
   myLottie.play();
 
   $("#control-play").click(() => {
-    $("#control-play").toggleClass("control-play-active");
-    $("#control-play-container").toggleClass("control-play-container-active");
     if (playing) {
       // myLottie.pause();
       myLottie.setDirection(1);
@@ -45,7 +43,8 @@ $(document).ready(function () {
       $("#audio")[0].pause();
       playing = !playing;
     } else {
-      // $("#control-play").addClass("control-play-active");
+      $("#control-play").addClass("control-play-active");
+      $("#control-play-container").addClass("control-play-container-active");
       myLottie.setDirection(-1);
       myLottie.play();
       $("#audio")[0].play();
