@@ -6,6 +6,7 @@ import lottie from 'lottie-web';
 
 let playing = false;
 let style = "webgl";
+let myAudioConnect;
 
 $(document).ready(function () {
   //Chrome is only browser to currently support Web Audio API
@@ -24,8 +25,6 @@ $(document).ready(function () {
     );
   }
 
-  const myAudioConnect = new AudioConnect();
-
   const myLottie = lottie.loadAnimation({
     container: document.getElementById("control-play"),
     renderer: 'svg',
@@ -43,8 +42,11 @@ $(document).ready(function () {
       $("#audio")[0].pause();
       playing = !playing;
     } else {
+      // 浏览器播放声音除了audio标签之外，还有另外一个API：AudioContext。
+      // 在页面无任何交互点击情况下，Chrome 66 禁止声音自动播放，即使new AudioContext()也不行
+      if (!myAudioConnect) myAudioConnect = new AudioConnect();
       $("#control-play").addClass("control-play-active");
-      $("#control-play-container").addClass("control-play-container-active");
+      // $("#control-play-container").addClass("control-play-container-active");
       myLottie.setDirection(-1);
       myLottie.play();
       $("#audio")[0].play();
@@ -55,6 +57,7 @@ $(document).ready(function () {
 
   const playByStyle = (type) => {
     style = type;
+    if (!myAudioConnect) myAudioConnect = new AudioConnect();
     if (type === "webgl") {
       removeRender();
       webgl.renderWebgl(myAudioConnect);
@@ -64,23 +67,15 @@ $(document).ready(function () {
     }
   }
 
-  $("#turn").click(() => {
+  $("#line").click(() => {
     playByStyle("line");
   });
 
-  $("#turnRect").click(() => {
+  $("#rect").click(() => {
     playByStyle("rect");
   });
 
   $("#webgl").click(() => {
     playByStyle("webgl");
-  });
-
-  $('#loadSample').click(function () {
-    $("#audio")[0].play();
-  });
-
-  $("#pause").click(function () {
-    $("#audio")[0].pause();
   });
 });
