@@ -155,6 +155,23 @@ const config = {
                 ]
             },
             {
+                test: /\.css$/,
+                include: src,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    // "style-loader",
+                    "css-loader",
+                    {
+                        loader: "postcss-loader",
+                        options: {
+                            plugins: [
+                                require("autoprefixer")()
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
                 test: /\.(png|svg|jpg|gif)$/,
                 include: src,
                 use: [

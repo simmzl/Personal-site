@@ -181,12 +181,6 @@ body {
                     width: 8px;
                     height: 0;
                 }
-                .icon-left::before {
-                    // transform: rotate(225deg);
-                }
-                .icon-right::before {
-                    // transform: rotate(45deg);
-                }
             }
         }
         &.music {
@@ -210,22 +204,58 @@ body {
                 pointer-events: none;
             }
             .control-play {
+                z-index: 1;
                 width: 200px;
                 height: 200px;
+                top: 45%;
                 transition: all .4s;
-                transition-timing-function: cubic-bezier(0, 0, 0.05, 1.06);
+                transition-timing-function: ease-in-out;
+                cursor: pointer;
+                &::after {
+                    content: "";
+                    position: absolute;
+                    transition: width .3s ease-in-out .4s,
+                        opacity .3s ease-in-out;
+                    width: 0px;
+                    height: 0;
+                    right: -3px;
+                    bottom: 8px;
+                    border-bottom: 1px solid #fff;
+                }
                 &-active {
-                    // left: 96.3%;
-                    // top: 15%;
+                    left: 95.8%;
+                    top: 34%;
                     width: 100px;
                     height: 100px;
-                    transform: translate3d(0, -330px, 0);
+                    opacity: .6;
+                    &::after {
+                        width: 62px;
+                    }
+                    &:hover {
+                        opacity: 1;
+                    }
                 }
-                &-container {
-                    transition: all .3s;
-                    transition-timing-function: cubic-bezier(0, 0, 0.58, 0.4);
-                    &-active {
-                        transform: translate3d(617px, 0, 0);
+            }
+            .control-music-style {
+                z-index: 2;
+                padding-bottom: 0;
+                top: 15%;
+                left: 100%;
+                transform: translateX(-100%);
+                width: 62px;
+                border: none;
+                li {
+                    width: 100%;
+                    color: #fff;
+                    margin-bottom: 20px;
+                    line-height: 20px;
+                    border-bottom: 1px solid #fff;
+                    text-align: left;
+                    cursor: pointer;
+                    opacity: .6;
+                    transition: opacity .3s ease-in-out;
+                    &:hover {
+                        opacity: 1;
                     }
                 }
             }
