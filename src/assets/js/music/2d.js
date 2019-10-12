@@ -1,5 +1,3 @@
-// import AudioConnect from "./AudioConnect";
-
 let myAudioConnect, bufferLength, dataArray, barWidth, barHeight, analyser;
 
 const canvas = $("#canvas")[0];

@@ -36,5 +36,5 @@ class Photo {
     }
 }
 
-// const drawer = new Photo();
-// drawer.render();
+const drawer = new Photo();
+drawer.render();

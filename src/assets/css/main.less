@@ -5,6 +5,14 @@
 @primaryColor: #444;
 @smFont: 12px;
 
+.mixin-hover {
+    opacity: .6;
+    transition: opacity .3s;
+    &:hover {
+        opacity: 1;
+    }
+}
+
 body {
     background: rgb(222, 222, 222);
 }
@@ -70,13 +78,13 @@ body {
         transform: scale3d(1, 1, 1);
         transform: translate3d(0, 0, 0);
         background: #fff;
-        box-shadow: 0 15px 30px rgba(36, 37, 38, 0.1);
+        box-shadow: 0 15px 30px rgba(36, 37, 38, 0.25);
         .flicker;
         .fixed {
             position: absolute;
             /* position: fixed; */
             font-size: @smFont;
-            color: #000;
+            color: @primaryColor;
             &-center {
                 top: 50%;
                 left: 50%;
@@ -95,9 +103,12 @@ body {
                 padding: 5px 5px 20px; 
             }
             &-left-bottom {
-                bottom: 95px;
-                left: -15px;
-                transform: rotate(90deg);
+                bottom: @distance;
+                left: @distance + 20px;
+                height: 20px;
+                line-height: 1;
+                transform: rotate(-90deg);
+                transform-origin: left bottom;
             }
             &-right-bottom {
                 right: @distance;
@@ -236,7 +247,7 @@ body {
                     }
                 }
             }
-            .control-music-style {
+            .control-style {
                 z-index: 2;
                 padding-bottom: 0;
                 top: 15%;
