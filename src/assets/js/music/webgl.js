@@ -1,21 +1,18 @@
-import "./ATUtil";
-import "./RequestAnimationFrame";
+// import "./ATUtil";
 import ImprovedNoise from "./ImprovedNoise";
-import AudioConnect from "./AudioConnect";
 
 const webgl = (function () {
 
-	var mouseX = 0,
+	let mouseX = 0,
 			mouseY = 0,
 			windowHalfX = window.innerWidth / 2,
 			windowHalfY = window.innerHeight / 2,
 			camera,
 			scene,
-			renderer,
-			container;
-	var analyser;
-	let source;
-	var started = false;
+			renderer;
+	let analyser;
+	// let source;
+	let started = false;
 
 
 	var LoopVisualizer = (function () {
@@ -160,9 +157,9 @@ const webgl = (function () {
 
 	function initWebgl(audioConnect) {
 		//init 3D scene
-		container = document.getElementById('music');
+		const container = document.getElementById('music');
 		camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000000);
-		camera.position.z = 350;
+		camera.position.z = 200;
 		scene = new THREE.Scene();
 		scene.add(camera);
 		// scene.background = new THREE.Color( 0xffdddddd );
@@ -194,7 +191,7 @@ const webgl = (function () {
 		const myAudioConnect = audioConnect;
 		analyser = myAudioConnect.analyser;
 		// analyser.smoothingTimeConstant = 0.1;
-		source = myAudioConnect.source;
+		// source = myAudioConnect.source;
 		startViz();
 	}
 
