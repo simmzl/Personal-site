@@ -45,7 +45,6 @@ $(document).ready(function () {
 
   $("#control-play").click(() => {
     if (playing) {
-      // myLottie.pause();
       myLottie.setDirection(1);
       myLottie.play();
       $("#audio")[0].pause();
@@ -55,7 +54,6 @@ $(document).ready(function () {
       // 在页面无任何交互点击情况下，Chrome 66 禁止声音自动播放，即使new AudioContext()也不行
       if (!myAudioConnect) myAudioConnect = new AudioConnect();
       $("#control-play").addClass("control-play-active");
-      // $("#control-play-container").addClass("control-play-container-active");
       myLottie.setDirection(-1);
       myLottie.play();
       $("#audio")[0].play();
