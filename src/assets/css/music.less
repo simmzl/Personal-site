@@ -10,8 +10,16 @@
     border-color: #fff;
   }
 
-  .btns span {
-    background: #fff;
+  .fixed-center-bottom {
+
+    .btns span {
+      background: #fff;
+    }
+
+    .icon-left::before,
+    .icon-right::before {
+        border-color: #fff;
+    }
   }
 
   .canvas {
@@ -38,23 +46,25 @@
       content: "";
       position: absolute;
       transition: width .3s ease-in-out .4s,
-        opacity .3s ease-in-out;
+                  opacity .3s ease-in-out;
       width: 0px;
       height: 0;
-      right: -3px;
+      right: -13px;
       bottom: 8px;
       border-bottom: 1px solid #fff;
     }
 
     &-active {
-      left: 95.8%;
-      top: 34%;
+      left: unset;
+      right: 8px;
+      top: 28.5%;
+      transform: translate3d(0, 0, 0);
       width: 100px;
       height: 100px;
       opacity: .6;
 
       &::after {
-        width: 62px;
+        width: 72px;
       }
 
       &:hover {
@@ -73,7 +83,7 @@
     border: none;
 
     li {
-      width: 100%;
+      width: 50%;
       color: #fff;
       margin-bottom: 20px;
       line-height: 20px;

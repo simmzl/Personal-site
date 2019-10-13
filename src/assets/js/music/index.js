@@ -8,7 +8,7 @@ import lottie from 'lottie-web';
 $(document).ready(function () {
 
   let playing = false;
-  let style = "webgl";
+  let style = "";
   let myAudioConnect;
   
   const isSupportWebgl = (function () {
@@ -29,6 +29,7 @@ $(document).ready(function () {
   myLottie.play();
 
   const playByStyle = (type) => {
+    if (style === type) return;
     style = type;
     if (!myAudioConnect) myAudioConnect = new AudioConnect();
 
@@ -58,7 +59,7 @@ $(document).ready(function () {
       myLottie.play();
       $("#audio")[0].play();
       playing = !playing;
-      playByStyle(style);
+      playByStyle(style ? style : "webgl");
     }
   })
 
