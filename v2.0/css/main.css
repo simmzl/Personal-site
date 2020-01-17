@@ -119,7 +119,7 @@ h1, h4 {
     background-image: -webkit-linear-gradient(0deg, #0061ff, #c600ff, #ff8c00, #c600ff, #0061ff);
 
     background-size: 1400% 400%;
-    animation: GradientInfinite 20s ease infinite;
+    animation: GradientInfinite 10s ease infinite;
 }
 
 @keyframes GradientRuturn {
