@@ -730,7 +730,7 @@
       // ---- between language and the test: offer background music ----
       mode = "bgm";
       pushLine("", );
-      pushLine(lang === "zh" ? "测试开始前，是否开启背景音乐？" : "Before we begin — enable background music?", "q");
+      pushLine(lang === "zh" ? "测试开始前，是否开启背景音乐？ 这可能是测试的一部分..." : "Before we begin — enable background music? This may be part of the test...", "q");
       pushLine(lang === "zh" ? "  [1] 开启" : "  [1] yes", "opt");
       pushLine(lang === "zh" ? "  [2] 保持安静" : "  [2] stay quiet", "opt");
       setPs1(lang === "zh" ? "音乐> " : "music> ");
