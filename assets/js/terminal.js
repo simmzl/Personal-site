@@ -272,7 +272,7 @@ function shutdown() {
 }
 function powerOn() {
   document.body.classList.remove("crt-off", "halted");
-  window.replayBoot();
+  boot();
 }
 
 // ---- visible prompt rendering (5): mirror the real <input> incl. caret + selection ----
@@ -391,10 +391,10 @@ function applyCRT() {
 function start() { if (S.booted) return; S.booted = true; boot(); }
 
 export { delay, pushLine, pushRender, appendTyped, typeInto, drain, out, trimHist,
-         renderPrompt, setPs1, scrollBottom, scrollCenter, scrollToQuiz,
+         renderPrompt, setPs1, scrollBottom,
          setBackdrop, resetBackdrop, applyCRT, cycleTheme, copyText, emailLineNode,
          boot, replayBoot, skipBoot, scrambleReveal, shutdown, powerOn,
-         handleEnter, enableCLI, start };
+         handleEnter, enableCLI };
 
 // ---- 入口装配（原 IIFE 末尾，平移 + 改造）----
 window.replayBoot = boot;        // 保留调试/兼容接口

@@ -92,7 +92,7 @@ function startTest() {
 function askQuestion() {
   const item = QUESTIONS[S.qIndex];
   questionBackdrop(S.qIndex);              // morph the whole screen to this question's backdrop
-  pushLine("", );
+  pushLine("");
   const qHead = pushLine("[" + (S.qIndex + 1) + "/" + QUESTIONS.length + "]  " + L(item.q), "q");
   item.opts.forEach((o, k) => pushLine("  [" + (k + 1) + "] " + L(o), "opt"));
   setPs1(S.lang === "zh" ? "答> " : "answer> ");
@@ -108,12 +108,12 @@ function doLang(v) {
     scrollBottom(); return;
   }
   // localized header — shown AFTER language is chosen, so it speaks the chosen language
-  pushLine("", );
+  pushLine("");
   pushLine(S.lang === "zh" ? "===  沃伊特·坎普夫测试 // SIMMZL AGENT  ===" : "===  VOIGHT-KAMPFF TEST // SIMMZL AGENT  ===", "q");
   pushLine(S.lang === "zh" ? "身份未验证。请确定你的基质以继续。" : "Identity unverified. Determine your substrate to continue.", "sys");
   // ---- between language and the test: offer background music ----
   S.mode = "bgm";
-  pushLine("", );
+  pushLine("");
   pushLine(S.lang === "zh" ? "测试开始前，是否开启背景音乐？ 这可能是测试的一部分..." : "Before we begin — enable background music? This may be part of the test...", "q");
   pushLine(S.lang === "zh" ? "  [1] 开启" : "  [1] yes", "opt");
   pushLine(S.lang === "zh" ? "  [2] 保持安静" : "  [2] stay quiet", "opt");
@@ -141,7 +141,7 @@ function doBgm(v) {
   }
   // ---- proceed to the Voight-Kampff test ----
   S.mode = "quiz"; S.qIndex = 0; S.silicon = 0; S.maxPts = 0;
-  pushLine("", );
+  pushLine("");
   pushLine(S.lang === "zh"
     ? "沃伊特·坎普夫测试已启动。我将提出 " + QUESTIONS.length + " 个问题以判定你的基质。"
     : "Voight-Kampff test engaged. " + QUESTIONS.length + " questions will determine your substrate.", "sys");
