@@ -102,7 +102,7 @@ function reset() { stop(); current = null; ripples = []; if (ctx) ctx.clearRect(
 const stars = {
   layers: [],
   init(w, h, o) {
-    const base = [70, 40, 16], par = [4, 11, 24], depth = [0.35, 0.6, 1];
+    const base = [110, 64, 28], par = [4, 11, 24], depth = [0.35, 0.6, 1];
     const k = (0.55 + 0.45 * o.tension) * (o.mobile ? 0.55 : 1);
     this.layers = base.map((n, li) => ({
       par: par[li], depth: depth[li],
@@ -157,10 +157,10 @@ const tracks = {
     this.pulses = this.pulses.filter(p => p.z > 0);
   },
   draw(ctx, env) {
-    const vpX = env.w / 2 + (env.pointer.x - 0.5) * env.w * 0.10, vpY = env.h * 0.30;
+    const vpX = env.w / 2 + (env.pointer.x - 0.5) * env.w * 0.04, vpY = env.h * 0.30;
     const railBase = env.w * 0.20;                               // 底部轨道半间距
     const offAt = y => railBase * (y - vpY) / (env.h - vpY);     // 轨道在屏幕 y 处的横向偏移
-    const persp = z => vpY + Math.pow(1 - z, 1.7) * (env.h - vpY);
+    const persp = z => vpY + Math.pow(1 - z, 1.3) * (env.h - vpY);
     const topY = vpY + (env.h - vpY) * 0.04;                     // 留间隙，远端不收成尖点
     // 两条轨道线：远端渐变淡出（消失点透明，不画出明显交点）
     const grad = ctx.createLinearGradient(0, topY, 0, env.h);
@@ -243,7 +243,7 @@ const rain = {
   drops: [], splash: [],
   init(w, h, o) {
     const n = Math.round(140 * (0.55 + 0.45 * o.tension) * (o.mobile ? 0.5 : 1));
-    this.drops = Array.from({ length: n }, () => ({ x: rand(0, w), y: rand(0, h), len: rand(10, 26), sp: rand(450, 900), a: rand(0.1, 0.4) }));
+    this.drops = Array.from({ length: n }, () => ({ x: rand(0, w), y: rand(0, h), len: rand(10, 26), sp: rand(450, 900), a: rand(0.28, 0.66) }));
     this.splash = [];
   },
   update(dt, env) {
@@ -259,7 +259,7 @@ const rain = {
     this.splash = this.splash.filter(sp => (env.t - sp.born) < sp.life);
   },
   draw(ctx, env) {
-    ctx.strokeStyle = rgba(env.color, 0.5); ctx.lineWidth = 1;
+    ctx.strokeStyle = rgba(env.color, 0.7); ctx.lineWidth = 1;
     for (const d of this.drops) { ctx.globalAlpha = d.a; ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x - d.len * 0.18, d.y - d.len); ctx.stroke(); }
     ctx.globalAlpha = 1;
     for (const sp of this.splash) { ctx.fillStyle = rgba(env.color, 0.4 * (1 - (env.t - sp.born) / sp.life)); ctx.beginPath(); ctx.arc(sp.x, sp.y, 1.3, 0, 6.283); ctx.fill(); }
@@ -284,12 +284,8 @@ const moon = {
     const cx = env.w / 2 + (env.pointer.x - 0.5) * 16, cy = env.h * 0.4 + (env.pointer.y - 0.5) * 10;
     const R = Math.min(env.w, env.h) * 0.16;
     const ox = (env.pointer.x - 0.5) * 30, oy = (env.pointer.y - 0.5) * 18;
-    ctx.save(); ctx.translate(env.w / 2 + ox, env.h * 0.4 + oy); ctx.rotate(this.spin);
-    ctx.setLineDash([4, 8]); ctx.strokeStyle = rgba(env.dim, 0.4); ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.ellipse(0, 0, R * 2.4, R * 1, 0, 0, 6.283); ctx.stroke();
-    ctx.setLineDash([]); ctx.restore();
     const g = ctx.createRadialGradient(cx - R * 0.3, cy - R * 0.3, R * 0.2, cx, cy, R);
-    g.addColorStop(0, rgba(env.color, 0.42 + this.flash * 0.3)); g.addColorStop(0.7, rgba(env.color, 0.2)); g.addColorStop(1, rgba(env.color, 0.12));
+    g.addColorStop(0, rgba(env.color, 0.22 + this.flash * 0.3)); g.addColorStop(1, rgba(env.color, 0.04));
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.283); ctx.fill();
     for (const sat of this.sats) { const x = env.w / 2 + ox + Math.cos(sat.ang) * R * 2.4 * (sat.rx / 0.4), y = env.h * 0.4 + oy + Math.sin(sat.ang) * R * (sat.ry / 0.16); ctx.fillStyle = rgba(env.color, 0.7); ctx.beginPath(); ctx.arc(x, y, 1.6, 0, 6.283); ctx.fill(); }
   },
