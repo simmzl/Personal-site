@@ -102,7 +102,7 @@ function reset() { stop(); current = null; ripples = []; if (ctx) ctx.clearRect(
 const stars = {
   layers: [],
   init(w, h, o) {
-    const base = [110, 64, 28], par = [4, 11, 24], depth = [0.35, 0.6, 1];
+    const base = [160, 95, 42], par = [4, 11, 24], depth = [0.35, 0.6, 1];
     const k = (0.55 + 0.45 * o.tension) * (o.mobile ? 0.55 : 1);
     this.layers = base.map((n, li) => ({
       par: par[li], depth: depth[li],
@@ -143,44 +143,43 @@ const stars = {
 
 // Q2 铁轨：透视枕木滚近 + 轨道线 + 消失点视差 + 点击脉冲
 const tracks = {
-  ties: [], pulses: [],
+  ties: [], pulses: [], NEAR: 1, FAR: 14,
   init(w, h, o) {
-    const n = Math.round(16 * (0.6 + 0.4 * o.tension));
-    this.ties = Array.from({ length: n }, (_, i) => ({ z: i / n }));
+    const n = Math.round(22 * (0.6 + 0.4 * o.tension));
+    this.ties = Array.from({ length: n }, (_, i) => ({ wz: this.NEAR + (this.FAR - this.NEAR) * (i / n) }));
     this.pulses = [];
   },
   update(dt, env) {
-    const s = dt / 1000;
-    for (const t of this.ties) { t.z -= 0.12 * s; if (t.z < 0) t.z += 1; }
-    for (const r of env.ripples) if (!r._tk) { r._tk = 1; this.pulses.push({ z: 1 }); }
-    for (const p of this.pulses) p.z -= 0.5 * s;
-    this.pulses = this.pulses.filter(p => p.z > 0);
+    const s = dt / 1000, span = this.FAR - this.NEAR;
+    for (const t of this.ties) { t.wz -= 2.2 * s; if (t.wz < this.NEAR) t.wz += span; }
+    for (const r of env.ripples) if (!r._tk) { r._tk = 1; this.pulses.push({ wz: this.FAR }); }
+    for (const p of this.pulses) p.wz -= 7 * s;
+    this.pulses = this.pulses.filter(p => p.wz > this.NEAR);
   },
   draw(ctx, env) {
-    const vpX = env.w / 2 + (env.pointer.x - 0.5) * env.w * 0.04, vpY = env.h * 0.30;
-    const railBase = env.w * 0.20;                               // 底部轨道半间距
-    const offAt = y => railBase * (y - vpY) / (env.h - vpY);     // 轨道在屏幕 y 处的横向偏移
-    const persp = z => vpY + Math.pow(1 - z, 1.3) * (env.h - vpY);
-    const topY = vpY + (env.h - vpY) * 0.04;                     // 留间隙，远端不收成尖点
-    // 两条轨道线：远端渐变淡出（消失点透明，不画出明显交点）
-    const grad = ctx.createLinearGradient(0, topY, 0, env.h);
-    grad.addColorStop(0, rgba(env.color, 0)); grad.addColorStop(0.18, rgba(env.color, 0.45)); grad.addColorStop(1, rgba(env.color, 0.5));
+    // 真实 1/深度 透视：枕木世界等距，投影 near/wz → 近大远小 + 近疏远密
+    const vpX = env.w / 2 + (env.pointer.x - 0.5) * env.w * 0.04, vpY = env.h * 0.28;
+    const railBase = env.w * 0.22, span = env.h - vpY, NEAR = this.NEAR;
+    const projY = wz => vpY + span * (NEAR / wz);
+    const projW = wz => railBase * (NEAR / wz);
+    const grad = ctx.createLinearGradient(0, vpY, 0, env.h);
+    grad.addColorStop(0, rgba(env.color, 0)); grad.addColorStop(0.22, rgba(env.color, 0.4)); grad.addColorStop(1, rgba(env.color, 0.5));
     ctx.strokeStyle = grad; ctx.lineWidth = 1.5;
+    const yF = projY(this.FAR), wF = projW(this.FAR);
     ctx.beginPath();
-    ctx.moveTo(vpX - offAt(env.h), env.h); ctx.lineTo(vpX - offAt(topY), topY);
-    ctx.moveTo(vpX + offAt(env.h), env.h); ctx.lineTo(vpX + offAt(topY), topY);
+    ctx.moveTo(vpX - railBase, env.h); ctx.lineTo(vpX - wF, yF);
+    ctx.moveTo(vpX + railBase, env.h); ctx.lineTo(vpX + wF, yF);
     ctx.stroke();
-    // 枕木：半宽 = offAt(y)，端点正好落在轨道线上（贴合）
     const breathe = 0.06 + 0.05 * (0.5 + 0.5 * Math.sin(env.t / 600));
     for (const t of this.ties) {
-      const y = persp(t.z); if (y < topY) continue; const hw = offAt(y);
-      ctx.strokeStyle = rgba(env.color, breathe + (1 - t.z) * 0.18);
-      ctx.lineWidth = (1 - t.z) * 3 + 0.5;
+      const n01 = NEAR / t.wz, y = projY(t.wz), hw = projW(t.wz);
+      ctx.strokeStyle = rgba(env.color, breathe + n01 * 0.25);
+      ctx.lineWidth = n01 * 3.5 + 0.4;
       ctx.beginPath(); ctx.moveTo(vpX - hw, y); ctx.lineTo(vpX + hw, y); ctx.stroke();
     }
     for (const p of this.pulses) {
-      const y = persp(p.z); if (y < topY) continue; const hw = offAt(y);
-      ctx.strokeStyle = rgba(env.color, 0.8 * p.z); ctx.lineWidth = 3;
+      const n01 = NEAR / p.wz, y = projY(p.wz), hw = projW(p.wz);
+      ctx.strokeStyle = rgba(env.color, 0.85 * n01); ctx.lineWidth = 3;
       ctx.beginPath(); ctx.moveTo(vpX - hw, y); ctx.lineTo(vpX + hw, y); ctx.stroke();
     }
   },
@@ -216,7 +215,7 @@ const waves = {
 const dusk = {
   dust: [],
   init(w, h, o) {
-    const n = Math.round(60 * (0.55 + 0.45 * o.tension) * (o.mobile ? 0.55 : 1));
+    const n = Math.round(84 * (0.55 + 0.45 * o.tension) * (o.mobile ? 0.55 : 1));
     this.dust = Array.from({ length: n }, () => ({ x: rand(0, w), y: rand(0, h), vy: rand(6, 22), drift: rand(0, 6.28), sz: rand(0.6, 1.8), a: rand(0.1, 0.5) }));
   },
   update(dt, env) {
@@ -229,10 +228,26 @@ const dusk = {
   },
   draw(ctx, env) {
     const px = (env.pointer.x - 0.5) * 24, py = (env.pointer.y - 0.5) * 12;
-    const g = ctx.createLinearGradient(0, env.h, 0, env.h * 0.44 + py);
-    const br = 0.32 + 0.08 * Math.sin(env.t / 1400);
-    g.addColorStop(0, rgba(env.color, br)); g.addColorStop(0.4, rgba(env.color, br * 0.4)); g.addColorStop(1, rgba(env.color, 0));
-    ctx.fillStyle = g; ctx.fillRect(0, env.h * 0.44, env.w, env.h * 0.56);
+    const horizon = env.h * 0.62 + py;
+    // 天空霞光：地平线向上的暖色铺底
+    const sky = ctx.createLinearGradient(0, horizon, 0, env.h * 0.12 + py);
+    const br = 0.30 + 0.06 * Math.sin(env.t / 1400);
+    sky.addColorStop(0, rgba(env.color, br)); sky.addColorStop(0.5, rgba(env.color, br * 0.32)); sky.addColorStop(1, rgba(env.color, 0));
+    ctx.fillStyle = sky; ctx.fillRect(0, 0, env.w, horizon);
+    // 夕阳圆盘（半沉地平线）
+    const sunX = env.w / 2 + px * 1.5, sunR = Math.min(env.w, env.h) * 0.13;
+    const sun = ctx.createRadialGradient(sunX, horizon, sunR * 0.1, sunX, horizon, sunR);
+    sun.addColorStop(0, rgba(env.color, 0.55)); sun.addColorStop(0.55, rgba(env.color, 0.25)); sun.addColorStop(1, rgba(env.color, 0));
+    ctx.fillStyle = sun; ctx.beginPath(); ctx.arc(sunX, horizon, sunR, 0, 6.283); ctx.fill();
+    // 霞光带（几条水平晚霞层次，带微呼吸）
+    for (let i = 0; i < 3; i++) {
+      const by = horizon - sunR * (0.55 + i * 0.55) - i * 10;
+      const ba = Math.max(0, (0.13 - i * 0.032) * (0.7 + 0.3 * Math.sin(env.t / 900 + i)));
+      ctx.fillStyle = rgba(env.color, ba); ctx.fillRect(0, by, env.w, 3 + i * 2);
+    }
+    // 地平线亮线
+    ctx.fillStyle = rgba(env.color, 0.4); ctx.fillRect(0, horizon, env.w, 1.5);
+    // 漂浮尘埃
     for (const p of this.dust) { ctx.fillStyle = rgba(env.color, p.a); ctx.beginPath(); ctx.arc(p.x + px, p.y + py, p.sz, 0, 6.283); ctx.fill(); }
   },
   drawStatic(ctx, env) { this.draw(ctx, env); },
