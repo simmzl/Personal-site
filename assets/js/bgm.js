@@ -1,9 +1,9 @@
-// @SIMMZL bgm — 背景音乐 + phosphor beam 动画（module，暂留 window.BGM 兼容主逻辑）
-(function () {
+// @SIMMZL bgm — 背景音乐 + phosphor beam 动画（ES module）
+export const BGM = (function () {
   "use strict";
 var audio = document.getElementById("bgm");
 var btn = document.getElementById("bgm-toggle");
-if (!audio || !btn) return;
+if (!audio || !btn) return null;
 var lbl = btn.querySelector(".lbl");
 audio.volume = 0.30;
 
@@ -97,7 +97,7 @@ function zap() {
 }
 
 // exposed to the terminal flow
-window.BGM = {
+const api = {
   enable: function (withBeam) {
     play();
     if (withBeam) {
@@ -118,5 +118,5 @@ btn.addEventListener("click", function (e) {
   else audio.pause();
 });
 
+return api;
 })();
-export const BGM = window.BGM;
