@@ -175,65 +175,7 @@
   #bgfx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:hidden;display:block;
     color:var(--phos);opacity:0;transition:opacity .9s ease;}
   body.testing #bgfx{opacity:1}
-  #bgfx::before,#bgfx::after{content:"";position:absolute;inset:-25%;}
-  /* Q1 — drifting starfield */
-  #bgfx.fx-stars::before{
-    background-image:radial-gradient(circle,currentColor 1.4px,transparent 2.2px),
-                     radial-gradient(circle,currentColor 1.1px,transparent 1.9px);
-    background-size:120px 120px,74px 74px;background-position:0 0,37px 51px;
-    filter:drop-shadow(0 0 3px currentColor);
-    opacity:.42;animation:fxdrift 44s linear infinite;}
-  @keyframes fxdrift{to{transform:translate3d(-150px,-95px,0)}}
-  /* Q2 — track sleepers scrolling toward you + a center rail */
-  #bgfx.fx-tracks::before{
-    background-image:repeating-linear-gradient(to bottom,
-      transparent 0 40px,color-mix(in srgb,currentColor 70%,transparent) 40px 42px);
-    opacity:.07;animation:fxslidey 5s linear infinite;}
-  #bgfx.fx-tracks::after{
-    background:linear-gradient(to right,transparent 47%,
-      color-mix(in srgb,currentColor 60%,transparent) 49.6% 50.4%,transparent 53%);
-    opacity:.06;}
-  @keyframes fxslidey{to{transform:translateY(42px)}}
-  /* Q3 — concentric sound rings */
-  #bgfx.fx-waves::before,#bgfx.fx-waves::after{
-    inset:auto;left:50%;top:46%;width:40vmax;height:40vmax;border-radius:50%;
-    border:1.5px solid currentColor;transform:translate(-50%,-50%) scale(0);opacity:.5;
-    animation:fxring 3.6s ease-out infinite;}
-  #bgfx.fx-waves::after{animation-delay:1.8s}
-  @keyframes fxring{0%{transform:translate(-50%,-50%) scale(.02);opacity:.5}
-    100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
-  /* Q4 — dusk horizon glow + flickering grain */
-  #bgfx.fx-dusk::before{
-    background:linear-gradient(to top,
-      color-mix(in srgb,currentColor 42%,transparent) 0%,
-      color-mix(in srgb,currentColor 14%,transparent) 26%,transparent 56%);
-    opacity:.9;}
-  #bgfx.fx-dusk::after{
-    background-image:radial-gradient(circle,currentColor .7px,transparent 1.1px);
-    background-size:4px 4px;opacity:.14;animation:fxgrain .85s steps(4) infinite;}
-  @keyframes fxgrain{0%{transform:translate(0,0)}25%{transform:translate(-2px,1px)}
-    50%{transform:translate(1px,-2px)}75%{transform:translate(2px,2px)}100%{transform:translate(0,0)}}
-  /* Q5 — diagonal rain */
-  #bgfx.fx-rain::before,#bgfx.fx-rain::after{
-    background-image:repeating-linear-gradient(104deg,
-      transparent 0 20px,color-mix(in srgb,currentColor 82%,transparent) 20px 21px,transparent 21px 22px);
-    -webkit-mask-image:repeating-linear-gradient(to bottom,#000 0 15px,transparent 15px 52px);
-            mask-image:repeating-linear-gradient(to bottom,#000 0 15px,transparent 15px 52px);}
-  #bgfx.fx-rain::before{opacity:.24;animation:fxrain .5s linear infinite;}
-  #bgfx.fx-rain::after{opacity:.14;background-position:11px 0;animation:fxrain .82s linear infinite;}
-  @keyframes fxrain{from{transform:translateY(-52px)}to{transform:translateY(0)}}
-  /* Q6 — silver moon + slow orbit ring */
-  #bgfx.fx-moon::before{
-    inset:auto;left:50%;top:40%;width:46vmin;height:46vmin;border-radius:50%;
-    transform:translate(-50%,-50%);
-    background:radial-gradient(circle at 38% 38%,color-mix(in srgb,currentColor 17%,transparent),transparent 70%);
-    box-shadow:0 0 70px color-mix(in srgb,currentColor 13%,transparent);opacity:.85;}
-  #bgfx.fx-moon::after{
-    inset:auto;left:50%;top:40%;width:72vmin;height:72vmin;border-radius:50%;
-    border:1px dashed color-mix(in srgb,currentColor 28%,transparent);
-    transform:translate(-50%,-50%);opacity:.4;animation:fxspin 64s linear infinite;}
-  @keyframes fxspin{to{transform:translate(-50%,-50%) rotate(360deg)}}
-  @media (prefers-reduced-motion:reduce){#bgfx::before,#bgfx::after{animation:none!important}}
+  /* 背景特效由 canvas 引擎 bgfx.js 接管（粒子化重做）；上面 #bgfx 仅保留定位供 canvas 铺满 */
 
   /* (3) ICP filing footnote — same phosphor style, but VERY dim (strain to read);
      it lifts toward legible only on hover/focus. */
