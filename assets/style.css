@@ -172,7 +172,7 @@
   body.no-curve .glass{box-shadow:none}
 
   /* ---- (7) per-question ambient background field (Tier 2) — monochrome, tints with --phos ---- */
-  #bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  #bgfx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:hidden;display:block;
     color:var(--phos);opacity:0;transition:opacity .9s ease;}
   body.testing #bgfx{opacity:1}
   #bgfx::before,#bgfx::after{content:"";position:absolute;inset:-25%;}

@@ -2,6 +2,7 @@
 import { CFG, S, L, dom, delay, pushLine, appendTyped, typeInto, setPs1,
          scrollBottom, setBackdrop, resetBackdrop } from "./terminal.js";
 import { BGM } from "./bgm.js";
+import { BGFX } from "./bgfx.js";
 
 // ===========================================================
 //  TURING TEST  (bilingual)
@@ -75,6 +76,7 @@ const QBG = [
 function questionBackdrop(i) {
   const q = QBG[i] || QBG[0];
   setBackdrop(q.c[0], q.c[1], q.bg, i / (QUESTIONS.length - 1), q.fx);
+  BGFX.setEffect(q.fx, q, i / (QUESTIONS.length - 1));
 }
 
 function startTest() {
@@ -82,6 +84,7 @@ function startTest() {
   document.body.classList.add("testing");
   dom.history.textContent = "";
   resetBackdrop();                       // back to baseline green for the language / music prelude
+  BGFX.reset();
   pushLine("SELECT LANGUAGE / 选择语言", "q");
   pushLine("  [1] English", "opt");
   pushLine("  [2] 中文", "opt");
@@ -203,6 +206,7 @@ async function verdict() {
   S.typing = true;                                     // hold the output lock for the whole verdict
   dom.prompt.style.opacity = "0";
   resetBackdrop();                                   // results screen settles back to the signature green
+  BGFX.reset();
   const ratio = S.maxPts ? S.silicon / S.maxPts : 0;
   const isSilicon = ratio >= 0.5;
   const conf = Math.min(99, Math.max(55, Math.round(50 + Math.abs(ratio - 0.5) * 100)));

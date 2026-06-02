@@ -4,6 +4,7 @@
    bilingual Turing test (lang select -> questions -> silicon/carbon verdict). */
 import * as quiz from "./quiz.js";
 import * as cli from "./cli.js";
+import { BGFX } from "./bgfx.js";
 
 export const CFG = (window.SIM = window.SIM || {
   speed: 1, scanlines: 1, flicker: 1, curve: 1,
@@ -243,7 +244,7 @@ function setBackdrop(phos, dim, bg, tension, fx) {
   r.style.setProperty("--phos-dim", dim);
   r.style.setProperty("--bg", bg);
   r.style.setProperty("--tension", String(tension));
-  if (dom.bgfx) dom.bgfx.className = fx || "";
+  // 背景特效由 canvas 引擎 BGFX 接管（见 quiz.questionBackdrop）；fx 参数保留以兼容调用方签名
 }
 function resetBackdrop() { setBackdrop("#3bff7a", "#1f8a44", "#020602", 0, ""); }
 
@@ -401,6 +402,7 @@ window.replayBoot = boot;        // 保留调试/兼容接口
 window.skipBoot = skipBoot;
 window.SIM_applyCRT = applyCRT;
 applyCRT();
+if (dom.bgfx) BGFX.init(dom.bgfx);
 
 const haltEl = document.getElementById("halt");
 if (haltEl) haltEl.addEventListener("click", () => { if (S.mode === "off") powerOn(); });
