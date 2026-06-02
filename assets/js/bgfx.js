@@ -157,21 +157,29 @@ const tracks = {
     this.pulses = this.pulses.filter(p => p.z > 0);
   },
   draw(ctx, env) {
-    const vpX = env.w / 2 + (env.pointer.x - 0.5) * env.w * 0.12, vpY = env.h * 0.42;
-    const persp = z => vpY + Math.pow(1 - z, 1.6) * (env.h - vpY);
-    const halfW = z => (1 - z) * env.w * 0.6;
-    ctx.strokeStyle = rgba(env.color, 0.5); ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.moveTo(vpX - env.w * 0.6, env.h); ctx.lineTo(vpX, vpY);
-    ctx.moveTo(vpX + env.w * 0.6, env.h); ctx.lineTo(vpX, vpY); ctx.stroke();
+    const vpX = env.w / 2 + (env.pointer.x - 0.5) * env.w * 0.10, vpY = env.h * 0.30;
+    const railBase = env.w * 0.20;                               // 底部轨道半间距
+    const offAt = y => railBase * (y - vpY) / (env.h - vpY);     // 轨道在屏幕 y 处的横向偏移
+    const persp = z => vpY + Math.pow(1 - z, 1.7) * (env.h - vpY);
+    const topY = vpY + (env.h - vpY) * 0.04;                     // 留间隙，远端不收成尖点
+    // 两条轨道线：远端渐变淡出（消失点透明，不画出明显交点）
+    const grad = ctx.createLinearGradient(0, topY, 0, env.h);
+    grad.addColorStop(0, rgba(env.color, 0)); grad.addColorStop(0.18, rgba(env.color, 0.45)); grad.addColorStop(1, rgba(env.color, 0.5));
+    ctx.strokeStyle = grad; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(vpX - offAt(env.h), env.h); ctx.lineTo(vpX - offAt(topY), topY);
+    ctx.moveTo(vpX + offAt(env.h), env.h); ctx.lineTo(vpX + offAt(topY), topY);
+    ctx.stroke();
+    // 枕木：半宽 = offAt(y)，端点正好落在轨道线上（贴合）
     const breathe = 0.06 + 0.05 * (0.5 + 0.5 * Math.sin(env.t / 600));
     for (const t of this.ties) {
-      const y = persp(t.z), hw = halfW(t.z) * 0.5;
-      ctx.strokeStyle = rgba(env.color, breathe + (1 - t.z) * 0.2);
-      ctx.lineWidth = (1 - t.z) * 4 + 0.5;
+      const y = persp(t.z); if (y < topY) continue; const hw = offAt(y);
+      ctx.strokeStyle = rgba(env.color, breathe + (1 - t.z) * 0.18);
+      ctx.lineWidth = (1 - t.z) * 3 + 0.5;
       ctx.beginPath(); ctx.moveTo(vpX - hw, y); ctx.lineTo(vpX + hw, y); ctx.stroke();
     }
     for (const p of this.pulses) {
-      const y = persp(p.z), hw = halfW(p.z) * 0.5;
+      const y = persp(p.z); if (y < topY) continue; const hw = offAt(y);
       ctx.strokeStyle = rgba(env.color, 0.8 * p.z); ctx.lineWidth = 3;
       ctx.beginPath(); ctx.moveTo(vpX - hw, y); ctx.lineTo(vpX + hw, y); ctx.stroke();
     }
@@ -185,11 +193,11 @@ const waves = {
   init(w, h) { this.rings = []; this.acc = 0; this._lx = null; this._ly = null; },
   update(dt, env) {
     const s = dt / 1000; this.acc += dt;
-    if (this.acc > 1100) { this.acc = 0; this.rings.push({ x: env.w / 2, y: env.h * 0.46, r: 4, life: 3600, born: env.t, max: env.w * 0.5 }); }
+    if (this.acc > 2200) { this.acc = 0; this.rings.push({ x: env.w / 2, y: env.h * 0.46, r: 4, life: 3600, born: env.t, max: env.w * 0.5 }); }
     for (const r of env.ripples) if (!r._wv) { r._wv = 1; this.rings.push({ x: r.x, y: r.y, r: 4, life: 2600, born: env.t, max: env.w * 0.4 }); }
     const px = env.pointer.x * env.w, py = env.pointer.y * env.h;
-    if (this._lx != null && Math.hypot(px - this._lx, py - this._ly) > 40) this.rings.push({ x: px, y: py, r: 2, life: 1400, born: env.t, max: env.w * 0.12 });
-    if (this._lx == null || Math.hypot(px - this._lx, py - this._ly) > 40) { this._lx = px; this._ly = py; }
+    if (this._lx != null && Math.hypot(px - this._lx, py - this._ly) > 90) this.rings.push({ x: px, y: py, r: 2, life: 1100, born: env.t, max: env.w * 0.12 });
+    if (this._lx == null || Math.hypot(px - this._lx, py - this._ly) > 90) { this._lx = px; this._ly = py; }
     for (const ring of this.rings) ring.r += (ring.max / (ring.life / 1000)) * s;
     this.rings = this.rings.filter(ring => (env.t - ring.born) < ring.life);
   },
@@ -261,10 +269,9 @@ const rain = {
 
 // Q6 月：月盘 + 环形山 + 卫星椭圆轨道 + 自转虚线轨道 + 视差 + 点击泛光
 const moon = {
-  sats: [], craters: [], spin: 0, flash: 0,
+  sats: [], spin: 0, flash: 0,
   init(w, h, o) {
     this.sats = Array.from({ length: o.mobile ? 3 : 5 }, (_, i) => ({ ang: rand(0, 6.28), sp: rand(0.2, 0.5) * (i % 2 ? 1 : -1), rx: rand(0.34, 0.46), ry: rand(0.12, 0.2) }));
-    this.craters = Array.from({ length: 6 }, () => ({ dx: rand(-0.5, 0.5), dy: rand(-0.5, 0.5), r: rand(0.06, 0.16) }));
     this.spin = 0; this.flash = 0;
   },
   update(dt, env) {
@@ -282,9 +289,8 @@ const moon = {
     ctx.beginPath(); ctx.ellipse(0, 0, R * 2.4, R * 1, 0, 0, 6.283); ctx.stroke();
     ctx.setLineDash([]); ctx.restore();
     const g = ctx.createRadialGradient(cx - R * 0.3, cy - R * 0.3, R * 0.2, cx, cy, R);
-    g.addColorStop(0, rgba(env.color, 0.22 + this.flash * 0.3)); g.addColorStop(1, rgba(env.color, 0.04));
+    g.addColorStop(0, rgba(env.color, 0.42 + this.flash * 0.3)); g.addColorStop(0.7, rgba(env.color, 0.2)); g.addColorStop(1, rgba(env.color, 0.12));
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.283); ctx.fill();
-    for (const c of this.craters) { ctx.fillStyle = rgba(env.dim, 0.18); ctx.beginPath(); ctx.arc(cx + c.dx * R, cy + c.dy * R, c.r * R, 0, 6.283); ctx.fill(); }
     for (const sat of this.sats) { const x = env.w / 2 + ox + Math.cos(sat.ang) * R * 2.4 * (sat.rx / 0.4), y = env.h * 0.4 + oy + Math.sin(sat.ang) * R * (sat.ry / 0.16); ctx.fillStyle = rgba(env.color, 0.7); ctx.beginPath(); ctx.arc(x, y, 1.6, 0, 6.283); ctx.fill(); }
   },
   drawStatic(ctx, env) { this.draw(ctx, env); },
