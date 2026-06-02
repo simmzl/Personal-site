@@ -389,7 +389,7 @@ function applyCRT() {
   document.body.classList.toggle("no-curve", !CFG.curve);
 }
 
-function start() { if (S.booted) return; S.booted = true; boot(); }
+function start() { if (S.booted) return; S.booted = true; if (location.search.includes("fast")) skipBoot(); else boot(); }
 
 export { delay, pushLine, pushRender, appendTyped, typeInto, drain, out, trimHist,
          renderPrompt, setPs1, scrollBottom,

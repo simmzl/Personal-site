@@ -97,14 +97,199 @@ function setEffect(name, palette, t) {
 }
 function reset() { stop(); current = null; ripples = []; if (ctx) ctx.clearRect(0, 0, w, h); }
 
-// ---------- 效果注册表（Task 2-7 逐个替换占位）----------
-const placeholder = {
-  parts: [],
-  init(w, h) { this.parts = Array.from({ length: 40 }, () => ({ x: rand(0, w), y: rand(0, h), r: rand(1, 2.5), vx: rand(-8, 8), vy: rand(-8, 8) })); },
-  update(dt, env) { const s = dt / 1000; for (const p of this.parts) { p.x = (p.x + p.vx * s + env.w) % env.w; p.y = (p.y + p.vy * s + env.h) % env.h; } },
-  draw(ctx, env) { ctx.fillStyle = rgba(env.color, 0.5); for (const p of this.parts) { ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill(); } },
+// ---------- 6 个效果 ----------
+// Q1 星空：三层星点（景深视差）+ 闪烁 + 斥力 + 点击爆发
+const stars = {
+  layers: [],
+  init(w, h, o) {
+    const base = [70, 40, 16], par = [4, 11, 24], depth = [0.35, 0.6, 1];
+    const k = (0.55 + 0.45 * o.tension) * (o.mobile ? 0.55 : 1);
+    this.layers = base.map((n, li) => ({
+      par: par[li], depth: depth[li],
+      ps: Array.from({ length: Math.round(n * k) }, () => ({
+        x: rand(0, w), y: rand(0, h), sz: rand(0.6, 1.8) * (li + 1) * 0.6,
+        vx: rand(-4, 4) * depth[li], vy: rand(-3, 3) * depth[li], ph: rand(0, 6.28),
+      })),
+    }));
+  },
+  update(dt, env) {
+    const s = dt / 1000;
+    for (const L of this.layers) for (const p of L.ps) {
+      p.x = (p.x + p.vx * s + env.w) % env.w; p.y = (p.y + p.vy * s + env.h) % env.h;
+      p.ph += s * 2.2;
+      const ox = (env.pointer.x * env.w), oy = (env.pointer.y * env.h);
+      const dx = p.x - ox, dy = p.y - oy, d2 = dx * dx + dy * dy;
+      if (L.depth > 0.5 && d2 < 14000) { const d = Math.sqrt(d2) || 1, f = (120 - d) / 120 * 28 * s; p.x += dx / d * f; p.y += dy / d * f; }
+      for (const r of env.ripples) {
+        const age = (env.t - r.t0) / r.life, rx = p.x - r.x, ry = p.y - r.y, rd2 = rx * rx + ry * ry;
+        if (rd2 < 20000) { const rd = Math.sqrt(rd2) || 1, ff = (1 - age) * (140 - rd) / 140 * 80 * s; if (ff > 0) { p.x += rx / rd * ff; p.y += ry / rd * ff; } }
+      }
+    }
+  },
+  draw(ctx, env) {
+    for (const L of this.layers) {
+      const ox = (env.pointer.x - 0.5) * L.par, oy = (env.pointer.y - 0.5) * L.par;
+      ctx.shadowColor = rgba(env.color, 0.7); ctx.shadowBlur = L.depth > 0.7 ? 4 : 0;
+      for (const p of L.ps) {
+        const a = (0.25 + 0.55 * (0.5 + 0.5 * Math.sin(p.ph))) * (0.5 + L.depth * 0.5);
+        ctx.fillStyle = rgba(env.color, a);
+        ctx.beginPath(); ctx.arc(p.x + ox, p.y + oy, p.sz, 0, 6.283); ctx.fill();
+      }
+    }
+    ctx.shadowBlur = 0;
+  },
   drawStatic(ctx, env) { this.draw(ctx, env); },
 };
-const EFFECTS = { stars: placeholder, tracks: placeholder, waves: placeholder, dusk: placeholder, rain: placeholder, moon: placeholder };
+
+// Q2 铁轨：透视枕木滚近 + 轨道线 + 消失点视差 + 点击脉冲
+const tracks = {
+  ties: [], pulses: [],
+  init(w, h, o) {
+    const n = Math.round(16 * (0.6 + 0.4 * o.tension));
+    this.ties = Array.from({ length: n }, (_, i) => ({ z: i / n }));
+    this.pulses = [];
+  },
+  update(dt, env) {
+    const s = dt / 1000;
+    for (const t of this.ties) { t.z -= 0.12 * s; if (t.z < 0) t.z += 1; }
+    for (const r of env.ripples) if (!r._tk) { r._tk = 1; this.pulses.push({ z: 1 }); }
+    for (const p of this.pulses) p.z -= 0.5 * s;
+    this.pulses = this.pulses.filter(p => p.z > 0);
+  },
+  draw(ctx, env) {
+    const vpX = env.w / 2 + (env.pointer.x - 0.5) * env.w * 0.12, vpY = env.h * 0.42;
+    const persp = z => vpY + Math.pow(1 - z, 1.6) * (env.h - vpY);
+    const halfW = z => (1 - z) * env.w * 0.6;
+    ctx.strokeStyle = rgba(env.color, 0.5); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(vpX - env.w * 0.6, env.h); ctx.lineTo(vpX, vpY);
+    ctx.moveTo(vpX + env.w * 0.6, env.h); ctx.lineTo(vpX, vpY); ctx.stroke();
+    const breathe = 0.06 + 0.05 * (0.5 + 0.5 * Math.sin(env.t / 600));
+    for (const t of this.ties) {
+      const y = persp(t.z), hw = halfW(t.z) * 0.5;
+      ctx.strokeStyle = rgba(env.color, breathe + (1 - t.z) * 0.2);
+      ctx.lineWidth = (1 - t.z) * 4 + 0.5;
+      ctx.beginPath(); ctx.moveTo(vpX - hw, y); ctx.lineTo(vpX + hw, y); ctx.stroke();
+    }
+    for (const p of this.pulses) {
+      const y = persp(p.z), hw = halfW(p.z) * 0.5;
+      ctx.strokeStyle = rgba(env.color, 0.8 * p.z); ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(vpX - hw, y); ctx.lineTo(vpX + hw, y); ctx.stroke();
+    }
+  },
+  drawStatic(ctx, env) { this.draw(ctx, env); },
+};
+
+// Q3 声波：中心持续发环 + 点击发环 + 鼠标移动漾涟漪
+const waves = {
+  rings: [], acc: 0, _lx: null, _ly: null,
+  init(w, h) { this.rings = []; this.acc = 0; this._lx = null; this._ly = null; },
+  update(dt, env) {
+    const s = dt / 1000; this.acc += dt;
+    if (this.acc > 1100) { this.acc = 0; this.rings.push({ x: env.w / 2, y: env.h * 0.46, r: 4, life: 3600, born: env.t, max: env.w * 0.5 }); }
+    for (const r of env.ripples) if (!r._wv) { r._wv = 1; this.rings.push({ x: r.x, y: r.y, r: 4, life: 2600, born: env.t, max: env.w * 0.4 }); }
+    const px = env.pointer.x * env.w, py = env.pointer.y * env.h;
+    if (this._lx != null && Math.hypot(px - this._lx, py - this._ly) > 40) this.rings.push({ x: px, y: py, r: 2, life: 1400, born: env.t, max: env.w * 0.12 });
+    if (this._lx == null || Math.hypot(px - this._lx, py - this._ly) > 40) { this._lx = px; this._ly = py; }
+    for (const ring of this.rings) ring.r += (ring.max / (ring.life / 1000)) * s;
+    this.rings = this.rings.filter(ring => (env.t - ring.born) < ring.life);
+  },
+  draw(ctx, env) {
+    ctx.lineWidth = 1.5;
+    for (const ring of this.rings) {
+      const age = (env.t - ring.born) / ring.life;
+      ctx.strokeStyle = rgba(env.color, 0.5 * (1 - age));
+      ctx.beginPath(); ctx.arc(ring.x, ring.y, ring.r, 0, 6.283); ctx.stroke();
+    }
+  },
+  drawStatic(ctx, env) { ctx.strokeStyle = rgba(env.color, 0.3); ctx.beginPath(); ctx.arc(env.w / 2, env.h * 0.46, env.w * 0.2, 0, 6.283); ctx.stroke(); },
+};
+
+// Q4 黄昏：地平线光晕呼吸 + 漂浮尘埃（布朗）+ 视差 + 点击扬尘
+const dusk = {
+  dust: [],
+  init(w, h, o) {
+    const n = Math.round(60 * (0.55 + 0.45 * o.tension) * (o.mobile ? 0.55 : 1));
+    this.dust = Array.from({ length: n }, () => ({ x: rand(0, w), y: rand(0, h), vy: rand(6, 22), drift: rand(0, 6.28), sz: rand(0.6, 1.8), a: rand(0.1, 0.5) }));
+  },
+  update(dt, env) {
+    const s = dt / 1000;
+    for (const p of this.dust) {
+      p.y -= p.vy * s; p.drift += s; p.x += Math.sin(p.drift) * 6 * s;
+      if (p.y < -4) { p.y = env.h + 4; p.x = rand(0, env.w); }
+      for (const r of env.ripples) { const dx = p.x - r.x, dy = p.y - r.y, d2 = dx * dx + dy * dy; if (d2 < 9000) p.vy += 30 * s; }
+    }
+  },
+  draw(ctx, env) {
+    const px = (env.pointer.x - 0.5) * 24, py = (env.pointer.y - 0.5) * 12;
+    const g = ctx.createLinearGradient(0, env.h, 0, env.h * 0.44 + py);
+    const br = 0.32 + 0.08 * Math.sin(env.t / 1400);
+    g.addColorStop(0, rgba(env.color, br)); g.addColorStop(0.4, rgba(env.color, br * 0.4)); g.addColorStop(1, rgba(env.color, 0));
+    ctx.fillStyle = g; ctx.fillRect(0, env.h * 0.44, env.w, env.h * 0.56);
+    for (const p of this.dust) { ctx.fillStyle = rgba(env.color, p.a); ctx.beginPath(); ctx.arc(p.x + px, p.y + py, p.sz, 0, 6.283); ctx.fill(); }
+  },
+  drawStatic(ctx, env) { this.draw(ctx, env); },
+};
+
+// Q5 雨：每滴独立长度/速度/透明度 + 溅水花 + 鼠标斥力拨开 + 点击溅射
+const rain = {
+  drops: [], splash: [],
+  init(w, h, o) {
+    const n = Math.round(140 * (0.55 + 0.45 * o.tension) * (o.mobile ? 0.5 : 1));
+    this.drops = Array.from({ length: n }, () => ({ x: rand(0, w), y: rand(0, h), len: rand(10, 26), sp: rand(450, 900), a: rand(0.1, 0.4) }));
+    this.splash = [];
+  },
+  update(dt, env) {
+    const s = dt / 1000, ox = env.pointer.x * env.w, oy = env.pointer.y * env.h;
+    for (const d of this.drops) {
+      d.y += d.sp * s; d.x += d.sp * 0.18 * s;
+      const dx = d.x - ox, dy = d.y - oy;
+      if (dx * dx + dy * dy < 9000) d.x += (dx > 0 ? 1 : -1) * 60 * s;
+      if (d.y > env.h) { this.splash.push({ x: d.x, y: env.h, vx: rand(-30, 30), vy: rand(-60, -20), life: 360, born: env.t }); d.y = rand(-40, 0); d.x = rand(0, env.w); }
+    }
+    for (const r of env.ripples) if (!r._rn) { r._rn = 1; for (let i = 0; i < 10; i++) this.splash.push({ x: r.x, y: r.y, vx: rand(-80, 80), vy: rand(-120, -20), life: 500, born: env.t }); }
+    for (const sp of this.splash) { sp.x += sp.vx * s; sp.vy += 200 * s; sp.y += sp.vy * s; }
+    this.splash = this.splash.filter(sp => (env.t - sp.born) < sp.life);
+  },
+  draw(ctx, env) {
+    ctx.strokeStyle = rgba(env.color, 0.5); ctx.lineWidth = 1;
+    for (const d of this.drops) { ctx.globalAlpha = d.a; ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x - d.len * 0.18, d.y - d.len); ctx.stroke(); }
+    ctx.globalAlpha = 1;
+    for (const sp of this.splash) { ctx.fillStyle = rgba(env.color, 0.4 * (1 - (env.t - sp.born) / sp.life)); ctx.beginPath(); ctx.arc(sp.x, sp.y, 1.3, 0, 6.283); ctx.fill(); }
+  },
+  drawStatic(ctx, env) { this.draw(ctx, env); },
+};
+
+// Q6 月：月盘 + 环形山 + 卫星椭圆轨道 + 自转虚线轨道 + 视差 + 点击泛光
+const moon = {
+  sats: [], craters: [], spin: 0, flash: 0,
+  init(w, h, o) {
+    this.sats = Array.from({ length: o.mobile ? 3 : 5 }, (_, i) => ({ ang: rand(0, 6.28), sp: rand(0.2, 0.5) * (i % 2 ? 1 : -1), rx: rand(0.34, 0.46), ry: rand(0.12, 0.2) }));
+    this.craters = Array.from({ length: 6 }, () => ({ dx: rand(-0.5, 0.5), dy: rand(-0.5, 0.5), r: rand(0.06, 0.16) }));
+    this.spin = 0; this.flash = 0;
+  },
+  update(dt, env) {
+    const s = dt / 1000; this.spin += s * 0.1;
+    for (const sat of this.sats) sat.ang += sat.sp * s;
+    for (const r of env.ripples) if (!r._mn) { r._mn = 1; this.flash = 1; }
+    if (this.flash > 0) this.flash = Math.max(0, this.flash - s * 1.5);
+  },
+  draw(ctx, env) {
+    const cx = env.w / 2 + (env.pointer.x - 0.5) * 16, cy = env.h * 0.4 + (env.pointer.y - 0.5) * 10;
+    const R = Math.min(env.w, env.h) * 0.16;
+    const ox = (env.pointer.x - 0.5) * 30, oy = (env.pointer.y - 0.5) * 18;
+    ctx.save(); ctx.translate(env.w / 2 + ox, env.h * 0.4 + oy); ctx.rotate(this.spin);
+    ctx.setLineDash([4, 8]); ctx.strokeStyle = rgba(env.dim, 0.4); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.ellipse(0, 0, R * 2.4, R * 1, 0, 0, 6.283); ctx.stroke();
+    ctx.setLineDash([]); ctx.restore();
+    const g = ctx.createRadialGradient(cx - R * 0.3, cy - R * 0.3, R * 0.2, cx, cy, R);
+    g.addColorStop(0, rgba(env.color, 0.22 + this.flash * 0.3)); g.addColorStop(1, rgba(env.color, 0.04));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.283); ctx.fill();
+    for (const c of this.craters) { ctx.fillStyle = rgba(env.dim, 0.18); ctx.beginPath(); ctx.arc(cx + c.dx * R, cy + c.dy * R, c.r * R, 0, 6.283); ctx.fill(); }
+    for (const sat of this.sats) { const x = env.w / 2 + ox + Math.cos(sat.ang) * R * 2.4 * (sat.rx / 0.4), y = env.h * 0.4 + oy + Math.sin(sat.ang) * R * (sat.ry / 0.16); ctx.fillStyle = rgba(env.color, 0.7); ctx.beginPath(); ctx.arc(x, y, 1.6, 0, 6.283); ctx.fill(); }
+  },
+  drawStatic(ctx, env) { this.draw(ctx, env); },
+};
+
+const EFFECTS = { stars, tracks, waves, dusk, rain, moon };
 
 export const BGFX = { init, setEffect, reset };
