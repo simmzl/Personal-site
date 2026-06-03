@@ -80,9 +80,18 @@ function questionBackdrop(i) {
 }
 
 function startTest() {
-  S.mode = "lang"; S.lang = "en"; S.qIndex = 0; S.silicon = 0; S.maxPts = 0;
   document.body.classList.add("testing");
   dom.history.textContent = "";
+  const params = new URLSearchParams(location.search);
+  const qp = params.get("q");
+  if (qp) {                              // 调试：?q=N 直接进第 N 题（配 ?fast 跳过开机）
+    S.lang = params.get("lang") === "zh" ? "zh" : "en";
+    S.silicon = 0; S.maxPts = 0; S.mode = "quiz";
+    S.qIndex = Math.max(0, Math.min(QUESTIONS.length - 1, (parseInt(qp, 10) || 1) - 1));
+    askQuestion();
+    return;
+  }
+  S.mode = "lang"; S.lang = "en"; S.qIndex = 0; S.silicon = 0; S.maxPts = 0;
   resetBackdrop();                       // back to baseline green for the language / music prelude
   BGFX.reset();
   pushLine("SELECT LANGUAGE / 选择语言", "q");
