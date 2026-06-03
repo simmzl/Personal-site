@@ -170,6 +170,12 @@
     box-shadow:inset 0 0 120px rgba(0,0,0,.9),inset 0 0 30px color-mix(in srgb,var(--phos) 18%,transparent);
     border-radius:14px;}
   body.no-curve .glass{box-shadow:none}
+  /* 移动端（小屏）减弱暗角，避免黑色盖太多；桌面 (pointer:fine) 完全不受影响 */
+  @media (pointer: coarse){
+    .vig{background:radial-gradient(ellipse at center,
+      transparent calc(70% - var(--tension,0) * 12%),
+      rgba(0,0,0,calc(.5 + var(--tension,0) * .1)) 100%);}
+  }
 
   /* ---- (7) per-question ambient background field (Tier 2) — monochrome, tints with --phos ---- */
   #bgfx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:hidden;display:block;

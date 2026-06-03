@@ -301,6 +301,16 @@ function renderPrompt() {
   dom.cmd.innerHTML = html;
 }
 
+// 移动端：把隐藏 input 覆盖到光标(prompt)处，让手指能直接点中它触发原生键盘
+function placeCli() {
+  if (!dom.prompt) return;
+  const r = dom.prompt.getBoundingClientRect();
+  const st = dom.cli.style;
+  st.position = "fixed";
+  st.left = r.left + "px"; st.top = r.top + "px";
+  st.width = Math.max(140, r.width) + "px"; st.height = Math.max(28, r.height) + "px";
+}
+
 // ---- input dispatch ----
 function handleEnter() {
   if (S.typing) return;
@@ -329,10 +339,21 @@ function enableCLI() {
       if (e.key === "Enter") { e.preventDefault(); handleEnter(); }
       // everything else (arrows, copy/cut/paste, home/end) stays native
     });
-    const focusCli = () => { try { dom.cli.focus({ preventScroll: true }); } catch (_) { dom.cli.focus(); } };
-    document.addEventListener("mousedown", focusCli);
-    document.addEventListener("touchstart", focusCli, { passive: true });
-    addEventListener("keydown", (e) => { if (document.activeElement !== dom.cli && !e.metaKey && !e.ctrlKey) focusCli(); });
+    if (matchMedia("(pointer: coarse)").matches) {
+      // 移动端：input 覆盖光标(prompt)处，手指直接点它弹原生键盘；点别处自然失焦收起（不做 programmatic focus）
+      const st = dom.cli.style;
+      st.opacity = "1"; st.zIndex = "6"; st.pointerEvents = "auto"; st.caretColor = "transparent";
+      placeCli();
+      const sc = document.querySelector(".screen");
+      if (sc) sc.addEventListener("scroll", placeCli, { passive: true });
+      window.addEventListener("resize", placeCli);
+    } else {
+      // 桌面：保持原状——点任意处聚焦隐藏 input（物理键盘）
+      const focusCli = () => { try { dom.cli.focus({ preventScroll: true }); } catch (_) { dom.cli.focus(); } };
+      document.addEventListener("mousedown", focusCli);
+      document.addEventListener("touchstart", focusCli, { passive: true });
+      addEventListener("keydown", (e) => { if (document.activeElement !== dom.cli && !e.metaKey && !e.ctrlKey) focusCli(); });
+    }
   }
   renderPrompt();
   quiz.startTest();
