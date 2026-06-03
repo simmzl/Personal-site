@@ -230,9 +230,9 @@ const dusk = {
     const px = (env.pointer.x - 0.5) * 24, py = (env.pointer.y - 0.5) * 12;
     const horizon = env.h + py;
     // 天空霞光：地平线向上的暖色铺底
-    const sky = ctx.createLinearGradient(0, horizon, 0, env.h * 0.12 + py);
-    const br = 0.30 + 0.06 * Math.sin(env.t / 1400);
-    sky.addColorStop(0, rgba(env.color, br)); sky.addColorStop(0.5, rgba(env.color, br * 0.32)); sky.addColorStop(1, rgba(env.color, 0));
+    const sky = ctx.createLinearGradient(0, horizon, 0, env.h * 0.05 + py);
+    const br = 0.32 + 0.06 * Math.sin(env.t / 1400);
+    sky.addColorStop(0, rgba(env.color, br)); sky.addColorStop(0.38, rgba(env.color, br * 0.72)); sky.addColorStop(0.72, rgba(env.color, br * 0.28)); sky.addColorStop(1, rgba(env.color, 0));
     ctx.fillStyle = sky; ctx.fillRect(0, 0, env.w, horizon);
     // 夕阳圆盘（半沉地平线）
     const sunX = env.w / 2 + px * 1.5, sunR = Math.min(env.w, env.h) * 0.16;
