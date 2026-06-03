@@ -228,7 +228,7 @@ const dusk = {
   },
   draw(ctx, env) {
     const px = (env.pointer.x - 0.5) * 24, py = (env.pointer.y - 0.5) * 12;
-    const horizon = env.h * 0.84 + py;
+    const horizon = env.h * 0.92 + py;
     // 天空霞光：地平线向上的暖色铺底
     const sky = ctx.createLinearGradient(0, horizon, 0, env.h * 0.12 + py);
     const br = 0.30 + 0.06 * Math.sin(env.t / 1400);
