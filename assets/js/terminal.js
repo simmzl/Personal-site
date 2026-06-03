@@ -9,6 +9,7 @@ import { BGFX } from "./bgfx.js";
 export const CFG = (window.SIM = window.SIM || {
   speed: 1, scanlines: 1, flicker: 1, curve: 1,
 });
+if (CFG.bootSpeed == null) CFG.bootSpeed = 1.4;   // 开机动画速度，独立于测试打字 speed（越大越快），默认略快
 
 export const S = {
   mode: "lang",        // 'boot' | 'lang' | 'quiz' | 'thinking' | 'cli' | 'off'
@@ -76,7 +77,7 @@ async function typeLine(text) {
   for (let i = 0; i < text.length; i++) {
     if (my !== S.gen) return;
     line.textContent += text[i];
-    await delay((8 + Math.random() * 15) / CFG.speed);
+    await delay((8 + Math.random() * 15) / CFG.bootSpeed);
   }
 }
 
@@ -90,11 +91,11 @@ async function progressLine(label) {
   while (p < 100) {
     if (my !== S.gen) return;
     line.textContent = barText(label, p);
-    await delay((16 + Math.random() * 38) / CFG.speed);
+    await delay((16 + Math.random() * 38) / CFG.bootSpeed);
     p = Math.min(100, p + 4 + ((Math.random() * 13) | 0));
   }
   line.textContent = barText(label, 100);
-  await delay(140 / CFG.speed);
+  await delay(140 / CFG.bootSpeed);
 }
 
 async function boot() {
@@ -110,10 +111,10 @@ async function boot() {
     if (my !== S.gen) return;
     if (typeof l === "object" && l.bar) await progressLine(l.bar);
     else await typeLine(l);
-    await delay((22 + Math.random() * 50) / CFG.speed);
+    await delay((22 + Math.random() * 50) / CFG.bootSpeed);
   }
   if (my !== S.gen) return;
-  await delay(260 / CFG.speed);
+  await delay(260 / CFG.bootSpeed);
   await scrambleReveal();
   if (my !== S.gen) return;
   enableCLI();
@@ -349,7 +350,7 @@ async function scrambleReveal() {
   const locked = target.map(() => false);
   let done = 0;
   target.forEach((_, i) => {
-    setTimeout(() => { locked[i] = true; done++; }, (200 + i * 130) / CFG.speed);
+    setTimeout(() => { locked[i] = true; done++; }, (200 + i * 130) / CFG.bootSpeed);
   });
   return new Promise((resolve) => {
     const iv = setInterval(() => {
