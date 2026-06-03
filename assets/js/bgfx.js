@@ -234,14 +234,7 @@ const dusk = {
     const br = 0.32 + 0.06 * Math.sin(env.t / 1400);
     sky.addColorStop(0, rgba(env.color, br)); sky.addColorStop(0.38, rgba(env.color, br * 0.72)); sky.addColorStop(0.72, rgba(env.color, br * 0.28)); sky.addColorStop(1, rgba(env.color, 0));
     ctx.fillStyle = sky; ctx.fillRect(0, 0, env.w, horizon);
-    // 夕阳圆盘（半沉地平线）
-    const sunX = env.w / 2 + px * 1.5, sunR = Math.min(env.w, env.h) * 0.16;
-    ctx.save();
-    ctx.filter = "blur(" + Math.round(sunR * 0.55) + "px)";   // 真正高斯模糊，糊掉盘边
-    const sun = ctx.createRadialGradient(sunX, horizon, 0, sunX, horizon, sunR);
-    sun.addColorStop(0, rgba(env.color, 0.5)); sun.addColorStop(0.5, rgba(env.color, 0.2)); sun.addColorStop(1, rgba(env.color, 0));
-    ctx.fillStyle = sun; ctx.beginPath(); ctx.arc(sunX, horizon, sunR, 0, 6.283); ctx.fill();
-    ctx.restore();
+    // （太阳已移除，保留天空暖色渐变 + 地平线 + 浮尘）
     // 地平线亮线（柔和）
     ctx.fillStyle = rgba(env.color, 0.22); ctx.fillRect(0, horizon, env.w, 1);
     // 漂浮尘埃
