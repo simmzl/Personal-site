@@ -27,9 +27,12 @@ const mobile = matchMedia("(max-width: 640px), (pointer: coarse)").matches;
 // ---------- resize（DPR 上限 2）----------
 function resize() {
   dpr = Math.min(2, window.devicePixelRatio || 1);
-  w = canvas.clientWidth; h = canvas.clientHeight;
-  canvas.width = w * dpr; canvas.height = h * dpr;
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const cw = canvas.clientWidth, ch = canvas.clientHeight;
+  canvas.width = cw * dpr; canvas.height = ch * dpr;
+  // 归一化到固定虚拟高度：各分辨率/各显示器表现一致，只整体缩放（不改任何效果参数）
+  h = 900; w = Math.round(h * cw / Math.max(1, ch));
+  const s = (ch / h) * dpr;
+  ctx.setTransform(s, 0, 0, s, 0, 0);
   if (current && current.resize) current.resize(w, h);
 }
 
@@ -42,7 +45,7 @@ function onMove(e) {
 function onTap(e) {
   if (!document.body.classList.contains("testing")) return;
   const p = e.touches ? e.touches[0] : e;
-  ripples.push({ x: p.clientX, y: p.clientY, t0: performance.now(), life: 1400 });
+  ripples.push({ x: p.clientX / window.innerWidth * w, y: p.clientY / window.innerHeight * h, t0: performance.now(), life: 1400 });
   if (ripples.length > 8) ripples.shift();
 }
 
