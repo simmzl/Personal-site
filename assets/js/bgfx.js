@@ -235,9 +235,10 @@ const dusk = {
     sky.addColorStop(0, rgba(env.color, br)); sky.addColorStop(0.5, rgba(env.color, br * 0.32)); sky.addColorStop(1, rgba(env.color, 0));
     ctx.fillStyle = sky; ctx.fillRect(0, 0, env.w, horizon);
     // 夕阳圆盘（半沉地平线）
-    const sunX = env.w / 2 + px * 1.5, sunR = Math.min(env.w, env.h) * 0.13;
-    const sun = ctx.createRadialGradient(sunX, horizon, sunR * 0.1, sunX, horizon, sunR);
-    sun.addColorStop(0, rgba(env.color, 0.55)); sun.addColorStop(0.55, rgba(env.color, 0.25)); sun.addColorStop(1, rgba(env.color, 0));
+    const sunX = env.w / 2 + px * 1.5, sunR = Math.min(env.w, env.h) * 0.20;
+    const sun = ctx.createRadialGradient(sunX, horizon, 0, sunX, horizon, sunR);
+    sun.addColorStop(0, rgba(env.color, 0.48)); sun.addColorStop(0.16, rgba(env.color, 0.3));
+    sun.addColorStop(0.4, rgba(env.color, 0.1)); sun.addColorStop(0.72, rgba(env.color, 0.025)); sun.addColorStop(1, rgba(env.color, 0));
     ctx.fillStyle = sun; ctx.beginPath(); ctx.arc(sunX, horizon, sunR, 0, 6.283); ctx.fill();
     // 地平线亮线（柔和）
     ctx.fillStyle = rgba(env.color, 0.22); ctx.fillRect(0, horizon, env.w, 1);
