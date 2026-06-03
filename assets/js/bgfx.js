@@ -239,14 +239,8 @@ const dusk = {
     const sun = ctx.createRadialGradient(sunX, horizon, sunR * 0.1, sunX, horizon, sunR);
     sun.addColorStop(0, rgba(env.color, 0.55)); sun.addColorStop(0.55, rgba(env.color, 0.25)); sun.addColorStop(1, rgba(env.color, 0));
     ctx.fillStyle = sun; ctx.beginPath(); ctx.arc(sunX, horizon, sunR, 0, 6.283); ctx.fill();
-    // 霞光带（几条水平晚霞层次，带微呼吸）
-    for (let i = 0; i < 3; i++) {
-      const by = horizon - sunR * (0.55 + i * 0.55) - i * 10;
-      const ba = Math.max(0, (0.13 - i * 0.032) * (0.7 + 0.3 * Math.sin(env.t / 900 + i)));
-      ctx.fillStyle = rgba(env.color, ba); ctx.fillRect(0, by, env.w, 3 + i * 2);
-    }
-    // 地平线亮线
-    ctx.fillStyle = rgba(env.color, 0.4); ctx.fillRect(0, horizon, env.w, 1.5);
+    // 地平线亮线（柔和）
+    ctx.fillStyle = rgba(env.color, 0.22); ctx.fillRect(0, horizon, env.w, 1);
     // 漂浮尘埃
     for (const p of this.dust) { ctx.fillStyle = rgba(env.color, p.a); ctx.beginPath(); ctx.arc(p.x + px, p.y + py, p.sz, 0, 6.283); ctx.fill(); }
   },
